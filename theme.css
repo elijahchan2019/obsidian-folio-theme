@@ -1046,10 +1046,21 @@ input[type='range']::-webkit-slider-thumb:hover {
 .callout {
   border-radius: var(--radius-l);
   border: 1px solid var(--background-modifier-border);
-  border-left: 3px solid var(--callout-color, var(--interactive-accent));
   background: var(--background-primary-alt);
-  padding: 16px 20px;
+  padding: 16px 20px 16px 24px;
+  position: relative;
   transition: transform var(--anim-fast), box-shadow var(--anim-fast);
+}
+.callout::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  bottom: -1px;
+  width: 4px;
+  background: var(--callout-accent, var(--callout-color, var(--interactive-accent)));
+  border-top-left-radius: var(--radius-l);
+  border-bottom-left-radius: var(--radius-l);
 }
 .callout:hover {
   transform: translate3d(-1px, -1px, 0);
@@ -1061,17 +1072,17 @@ input[type='range']::-webkit-slider-thumb:hover {
   color: var(--text-normal);
 }
 
-.callout[data-callout='info']     { border-left-color: var(--callout-color-info);    background: rgba(106, 155, 204, 0.06); color: #1a365d; }
-.callout[data-callout='warning']  { border-left-color: var(--callout-color-warning); background: rgba(212, 162, 127, 0.06); color: #7a4a23; }
+.callout[data-callout='info']     { --callout-accent: var(--callout-color-info);    background: rgba(106, 155, 204, 0.06); color: #1a365d; }
+.callout[data-callout='warning']  { --callout-accent: var(--callout-color-warning); background: rgba(212, 162, 127, 0.06); color: #7a4a23; }
 .callout[data-callout='error'],
-.callout[data-callout='danger']   { border-left-color: var(--callout-color-error);   background: rgba(196, 102, 134, 0.06); color: #7a1a3a; }
+.callout[data-callout='danger']   { --callout-accent: var(--callout-color-error);   background: rgba(196, 102, 134, 0.06); color: #7a1a3a; }
 .callout[data-callout='success'],
-.callout[data-callout='tip']      { border-left-color: var(--callout-color-success); background: rgba(120, 140, 93, 0.06); color: #3d5a1a; }
-.callout[data-callout='question'] { border-left-color: var(--callout-color-clay);    background: rgba(217, 119, 87, 0.06); }
-.callout[data-callout='quote']    { border-left-color: var(--callout-color-slate);   background: rgba(94, 93, 89, 0.04); }
+.callout[data-callout='tip']      { --callout-accent: var(--callout-color-success); background: rgba(120, 140, 93, 0.06); color: #3d5a1a; }
+.callout[data-callout='question'] { --callout-accent: var(--callout-color-clay);    background: rgba(217, 119, 87, 0.06); }
+.callout[data-callout='quote']    { --callout-accent: var(--callout-color-slate);   background: rgba(94, 93, 89, 0.04); }
 .callout[data-callout='abstract'],
-.callout[data-callout='summary']  { border-left-color: var(--callout-color-heather); background: rgba(130, 125, 189, 0.06); }
-.callout[data-callout='example']  { border-left-color: var(--callout-color-clay); }
+.callout[data-callout='summary']  { --callout-accent: var(--callout-color-heather); background: rgba(130, 125, 189, 0.06); }
+.callout[data-callout='example']  { --callout-accent: var(--callout-color-clay); }
 
 /* ── 表格 ──────────────────────────────────────────────────────
    社论增强版风格（精细排版）：
