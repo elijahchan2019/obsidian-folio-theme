@@ -1,6 +1,6 @@
 # Folio
 
-![Folio preview](screenshot.png)
+<img src="https://raw.githubusercontent.com/elijahchan2019/obsidian-folio-theme/main/screenshot.png" alt="Folio preview" width="100%">
 
 Folio is a warm, editorial Obsidian theme for reading, writing, and research. It pairs an ivory canvas with clay accents, book-like spacing, and refined typography so long notes feel closer to a manuscript than a generic app screen.
 
