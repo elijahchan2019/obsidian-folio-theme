@@ -47,11 +47,11 @@ body {
   --slate-faint:  #87867F;   /* 更淡文字 */
 
   /* ── 表格默认间距排版 ── */
-  --table-padding-x: 16px;
-  --table-padding-y: 12px;
-  --table-header-padding-x: 16px;
-  --table-header-padding-y: 14px;
-  --table-line-height: 1.6;
+  --table-padding-x: 14px;
+  --table-padding-y: 8px;
+  --table-header-padding-x: 14px;
+  --table-header-padding-y: 10px;
+  --table-line-height: 1.4;
 
   /* ── 字体平滑与排版 ── */
   -webkit-font-smoothing: antialiased;
@@ -1161,6 +1161,14 @@ input[type='range']::-webkit-slider-thumb:hover {
   line-height: var(--table-line-height);
   border-right: 1px solid var(--background-modifier-border);
   border-bottom: 1px solid var(--background-modifier-border);
+}
+
+/* 确保编辑模式 (Live Preview) 的表格单元格也读取一致的间距变量 */
+.markdown-source-view.mod-cm6 .cm-table-widget td .table-cell-wrapper {
+  padding: var(--table-padding-y) var(--table-padding-x);
+}
+.markdown-source-view.mod-cm6 .cm-table-widget th .table-cell-wrapper {
+  padding: var(--table-header-padding-y) var(--table-header-padding-x);
 }
 
 .markdown-rendered td:last-child,
