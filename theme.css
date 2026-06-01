@@ -46,6 +46,13 @@ body {
   --slate-light:  #B0AEA5;   /* Slate Light — 次要文字、图标 */
   --slate-faint:  #87867F;   /* 更淡文字 */
 
+  /* ── 表格默认间距排版 ── */
+  --table-padding-x: 16px;
+  --table-padding-y: 12px;
+  --table-header-padding-x: 16px;
+  --table-header-padding-y: 14px;
+  --table-line-height: 1.6;
+
   /* ── 字体平滑与排版 ── */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -1095,7 +1102,7 @@ input[type='range']::-webkit-slider-thumb:hover {
   font-weight: 700;
   letter-spacing: 0.01em;
   text-align: left;
-  padding: 14px 16px;
+  padding: var(--table-header-padding-y) var(--table-header-padding-x);
 
   background: var(--background-secondary-alt) !important;
   border-bottom: 2px solid var(--background-modifier-border);
@@ -1138,9 +1145,9 @@ input[type='range']::-webkit-slider-thumb:hover {
 
 .markdown-rendered td,
 .cm-embed-block td {
-  padding: 12px 16px;
+  padding: var(--table-padding-y) var(--table-padding-x);
   color: var(--text-normal);
-  line-height: 1.6;
+  line-height: var(--table-line-height);
   border-right: 1px solid var(--background-modifier-border);
   border-bottom: 1px solid var(--background-modifier-border);
 }
@@ -1164,6 +1171,17 @@ input[type='range']::-webkit-slider-thumb:hover {
   border: none;
   padding: 0 2px;
   font-size: 0.9em;
+}
+
+/* Dataview 专属紧凑化配置 */
+.dataview.table-view-table,
+.block-language-dataview table {
+  --table-padding-y: 6px;          /* 纵向内边距缩减一半 */
+  --table-padding-x: 12px;
+  --table-header-padding-y: 8px;   /* 表头纵向内边距缩减 */
+  --table-header-padding-x: 12px;
+  --table-line-height: 1.35;       /* 稍微收紧行高 */
+  font-size: 0.9em;                /* 适当降低字号提高信息密度 */
 }
 
 /* ── 阅读模式（限宽设在 sizer 层，滚动条保持在容器右边缘） ── */
