@@ -8,8 +8,9 @@ Folio is a warm, editorial Obsidian theme for reading, writing, and research. It
 
 - Warm light and dark modes with a shared ivory, slate, charcoal, and clay color system
 - Serif-forward reading layout with CJK-aware font fallbacks
-- Carefully styled navigation, tabs, search, command palette, modals, menus, and settings surfaces
-- Full Markdown coverage for headings, tables, callouts, blockquotes, links, tags, checkboxes, embeds, code, and Canvas nodes
+- Multi-color callouts for common note states, including info, warning, error, success, question, quote, summary, and example
+- Carefully styled navigation, tabs, search, command palette, modals, menus, sliders, and settings surfaces
+- Full Markdown coverage for headings, tables, callouts, blockquotes, links, tags, checkboxes, embeds, code, properties, and Canvas nodes
 - Accessible focus states, reduced-motion handling, high-contrast support, and print-friendly output
 
 ## Design
@@ -28,6 +29,20 @@ Typography is tuned for mixed English and Chinese notes. The public theme uses o
 - **Reading and headings:** Lora, Georgia, and CJK serif fallbacks
 - **Interface:** Instrument Sans, Inter, and system UI fallbacks
 - **Code:** JetBrains Mono and system monospace fallbacks
+
+## Feature Coverage
+
+Folio styles the parts of Obsidian that are most visible during daily writing:
+
+- **Callouts:** distinct accent palettes for `info`, `warning`, `error` / `danger`, `success` / `tip`, `question`, `quote`, `abstract` / `summary`, and `example`
+- **Tables:** bordered editorial tables with tuned header spacing, row hover states, and transparent inline code inside table cells
+- **Dataview:** compact Dataview table spacing using scoped table variables for better density
+- **Code:** warm syntax colors for keywords, strings, numbers, comments, functions, types, properties, operators, and variables
+- **Navigation:** active file and outline indicators with clay accent strips for stronger orientation
+- **Metadata:** transparent property fields with subtle hover and focus states
+- **Canvas and embeds:** rounded nodes, quiet borders, and soft elevation
+- **Tags and checkboxes:** clay pill tags and filled task checkboxes
+- **Accessibility:** visible keyboard focus, high-contrast mode support, reduced-motion support, and print/PDF-friendly styling
 
 ## Installation
 
