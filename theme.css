@@ -53,6 +53,9 @@ body {
   --table-header-padding-y: 10px;
   --table-line-height: 1.4;
 
+  /* ── Mermaid 图表字体 ── */
+  --font-mermaid: var(--font-interface-theme);
+
   /* ── 字体平滑与排版 ── */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -1366,6 +1369,47 @@ input.metadata-property-key-input:focus-visible,
 }
 .search-result-file-match { color: var(--text-muted); }
 .search-result-file-match:hover { background: var(--nav-item-background-hover); }
+
+/* ── 脚注（Editorial 书末注风格） ── */
+
+/* 阅读模式脚注区域 */
+.markdown-rendered .footnotes {
+  font-family: var(--font-interface-theme);
+  font-size: 0.82em;
+  color: var(--text-muted);
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--interactive-accent);
+}
+
+/* 脚注区分隔线用 Clay accent 替代默认灰线 */
+.markdown-rendered .footnotes-sep,
+.markdown-rendered .footnotes > hr {
+  display: none;  /* 隐藏默认 hr，由 .footnotes 的 border-top 替代 */
+}
+
+/* 正文中的脚注引用序号 */
+.footnote-ref,
+.footnote-link,
+.cm-footref {
+  color: var(--text-accent);
+  font-weight: 600;
+}
+
+/* 脚注返回按钮 */
+.footnote-backref {
+  color: var(--text-accent) !important;
+  opacity: 0.6;
+  transition: opacity var(--anim-fast);
+}
+.footnote-backref:hover {
+  opacity: 1;
+}
+
+/* 官方脚注变量覆盖 */
+body {
+  --footnote-size: 0.85em;
+}
 
 /* ── Canvas 白板 ── */
 
