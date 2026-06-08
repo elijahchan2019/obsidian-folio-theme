@@ -1699,7 +1699,8 @@ button:focus-visible .clickable-icon,
 }
 
 /* 按钮、输入框统一比例：水平 padding 大于垂直，避免方形 */
-button,
+/* 注意：排除 .clickable-icon（小图标按钮由 Obsidian 原生控制尺寸） */
+button:not(.clickable-icon),
 input[type="text"],
 input[type="email"],
 input[type="password"],
