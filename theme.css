@@ -127,7 +127,7 @@ body.theme-light {
   --tab-text-color-focused-active:         #141413;
   --tab-text-color-focused-active-current: #D97757;
   --tab-background-active: var(--background-primary);
-  --tab-outline-color:     var(--background-modifier-border);
+  --tab-outline-color:     #E2E0D7;   /* 实色描边，避免 rgba 在弧线处叠加变粗 */
   --tab-outline-width:     1px;
 
   /* 滑块（官方变量） */
@@ -240,7 +240,7 @@ body.theme-dark {
   --tab-text-color-focused-active:         rgba(250, 249, 245, 0.85);
   --tab-text-color-focused-active-current: #D97757;
   --tab-background-active: var(--background-primary);
-  --tab-outline-color:     var(--background-modifier-border);
+  --tab-outline-color:     #2A2A27;   /* 实色描边，避免 rgba 在弧线处叠加变粗 */
   --tab-outline-width:     1px;
 
   /* 滑块（官方变量） */
@@ -690,7 +690,7 @@ a.tag {
 }
 
 .workspace-tab-header-container {
-  border-bottom: 1px solid var(--background-modifier-border);
+  border-bottom: 1px solid var(--tab-outline-color);  /* 与页签描边统一实色 */
 }
 
 .titlebar-button-container {
