@@ -1,13 +1,13 @@
 /* ============================================================
-   Folio — Obsidian Theme  v1.0.6
-   字体: Lora · Instrument Sans · JetBrains Mono
+   Folio — Obsidian Theme  v1.0.7
+   字体: Inter · Lora · Instrument Sans · JetBrains Mono
    色彩: Ivory #FAF9F5 · Slate #141413 · Clay #D97757
    ============================================================*/
 
 /* ── 字体族（开源平替 + CJK 回退） ── */
 
 body {
-  --font-text-theme:       'Lora', Georgia, "Source Han Sans SC", "Source Han Sans CN", "Noto Sans CJK SC", "思源黑体", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-text-theme:       'Inter', 'Instrument Sans', system-ui, "Segoe UI", Roboto, Helvetica, Arial, "Source Han Sans SC", "Source Han Sans CN", "Noto Sans CJK SC", "思源黑体", "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-heading-theme:    'Lora', Georgia, "GenRyuMin2 TW", "源流明體月", "GenRyuMin2 TC", "源流明體丹", "GenRyuMin2 JP", "源流明朝", "GenRyuMin", "源流明體", "Source Han Serif SC", "Source Han Serif CN", "Noto Serif CJK SC", "思源宋体", "Songti SC", "STSong", serif;
   --font-monospace-theme:  'JetBrains Mono', ui-monospace, monospace;
   --font-interface-theme:  'Instrument Sans', 'Inter', system-ui, "Segoe UI", Roboto, Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -47,11 +47,11 @@ body {
   --slate-faint:  #87867F;   /* 更淡文字 */
 
   /* ── 表格默认间距排版 ── */
-  --table-padding-x: 14px;
-  --table-padding-y: 8px;
-  --table-header-padding-x: 14px;
-  --table-header-padding-y: 10px;
-  --table-line-height: 1.4;
+  --table-padding-x: 10px;
+  --table-padding-y: 5px;
+  --table-header-padding-x: 10px;
+  --table-header-padding-y: 7px;
+  --table-line-height: 1.35;
 
   /* ── Mermaid 图表字体 ── */
   --font-mermaid: var(--font-interface-theme);
@@ -1123,7 +1123,7 @@ input[type='range']::-webkit-slider-thumb:hover {
   width: 100%;
   border-collapse: collapse;
   font-family: var(--font-interface-theme);
-  font-size: 0.95em;
+  font-size: 0.88em;
   margin: 16px 0 20px 0;
 
   /* 外边框 + 圆角 */
@@ -1188,7 +1188,11 @@ input[type='range']::-webkit-slider-thumb:hover {
   border-bottom: 1px solid var(--background-modifier-border);
 }
 
-/* 确保编辑模式 (Live Preview) 的表格单元格也读取一致的间距变量 */
+/* 确保编辑模式 (Live Preview) 的表格单元格也读取一致的间距变量与字号 */
+.markdown-source-view.mod-cm6 .cm-table-widget {
+  font-size: 0.88em;
+  line-height: var(--table-line-height);
+}
 .markdown-source-view.mod-cm6 .cm-table-widget td .table-cell-wrapper {
   padding: var(--table-padding-y) var(--table-padding-x);
 }
@@ -1220,12 +1224,12 @@ input[type='range']::-webkit-slider-thumb:hover {
 /* Dataview 专属紧凑化配置 */
 .dataview.table-view-table,
 .block-language-dataview table {
-  --table-padding-y: 6px;          /* 纵向内边距缩减一半 */
-  --table-padding-x: 12px;
-  --table-header-padding-y: 8px;   /* 表头纵向内边距缩减 */
-  --table-header-padding-x: 12px;
-  --table-line-height: 1.35;       /* 稍微收紧行高 */
-  font-size: 0.9em;                /* 适当降低字号提高信息密度 */
+  --table-padding-y: 4px;          /* 纵向内边距缩减 */
+  --table-padding-x: 8px;
+  --table-header-padding-y: 6px;   /* 表头纵向内边距缩减 */
+  --table-header-padding-x: 8px;
+  --table-line-height: 1.3;        /* 稍微收紧行高 */
+  font-size: 0.85em;               /* 适当降低字号提高信息密度 */
 }
 
 /* ── 阅读模式（限宽设在 sizer 层，滚动条保持在容器右边缘） ── */
