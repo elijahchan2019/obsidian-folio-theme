@@ -1268,62 +1268,122 @@ input[type='range']::-webkit-slider-thumb:hover {
   background: rgba(217, 119, 87, 0.15);
 }
 
-/* ── Frontmatter / 属性 ── */
-
-/* ── 属性区域（仅覆盖颜色，布局由 Obsidian 原生控制） ── */
+/* ── Frontmatter / 属性 ──────────────────────────────────────
+   社论元数据条风格：
+   · 底部 Clay 色细分隔线，与正文优雅分离
+   · 精致小字号 + 行间细线，杂志版面感
+   · Tags 胶囊改为描边风格（仅在属性区内）
+   ─────────────────────────────────────────────────────────── */
 
 .metadata-container {
-  /* 容器：透明 */
+  /* 容器：透明底 + 底部 Clay 分隔线 */
   --metadata-background: transparent;
   --metadata-border-width: 0;
+  --metadata-padding: var(--size-4-2) 0;
 
-  /* 输入框白底消除（Obsidian 对 value 已处理，key 需要在此层覆盖） */
+  /* 行间细分隔线（杂志版面感） */
+  --metadata-divider-width: 1px;
+  --metadata-divider-color: var(--background-modifier-border);
+  --metadata-divider-color-hover: var(--background-modifier-border);
+  --metadata-divider-color-focus: var(--background-modifier-border);
+  --metadata-gap: 0;
+
+  /* 输入框白底消除 */
   --background-modifier-form-field: transparent;
 
   /* 属性行 hover/focus 颜色 */
-  --metadata-property-background-hover: rgba(var(--interactive-accent-rgb), 0.05);
-  --metadata-property-background-active: rgba(var(--interactive-accent-rgb), 0.08);
-  --metadata-property-box-shadow-focus: inset 0 0 0 1px rgba(var(--interactive-accent-rgb), 0.5);
+  --metadata-property-background-hover: rgba(var(--interactive-accent-rgb), 0.04);
+  --metadata-property-background-active: rgba(var(--interactive-accent-rgb), 0.06);
+  --metadata-property-box-shadow-focus: inset 0 0 0 1px rgba(var(--interactive-accent-rgb), 0.35);
+  --metadata-property-radius: 4px;
+  --metadata-property-radius-hover: 4px;
+  --metadata-property-radius-focus: 4px;
 
   /* 值输入框透明 */
   --metadata-input-background: transparent;
   --metadata-input-background-hover: transparent;
-  --metadata-input-background-active: rgba(var(--interactive-accent-rgb), 0.04);
+  --metadata-input-background-active: rgba(var(--interactive-accent-rgb), 0.03);
 
   font-family: var(--font-interface-theme);
   font-size: 0.8em;
+
+  /* 统一属性区所有文字的字体（覆盖官方 --font-interface 回退） */
+  --metadata-label-font: var(--font-interface-theme);
+  --metadata-input-font: var(--font-interface-theme);
+
+  /* 底部分隔线 — Clay accent，与脚注区呼应 */
+  border-bottom: 1px solid var(--interactive-accent);
+  padding-bottom: 12px;
+  margin-bottom: 24px;
 }
 
+/* 标题「笔记属性」：去 uppercase，更精致 */
 .metadata-properties-heading {
   color: var(--text-faint);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  font-size: 0.85em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  font-size: 0.72em;
+  opacity: 0.7;
 }
 
+/* 属性类型图标：缩小 + 降透明度，退居视觉背景 + 与文字拉开间距 */
+.metadata-property-icon {
+  --icon-size: var(--icon-xs);
+  --icon-stroke: var(--icon-xs-stroke-width);
+  opacity: 0.35;
+  transition: opacity var(--anim-fast);
+  margin-right: 2px;
+}
+
+.metadata-property:hover .metadata-property-icon,
+.metadata-property:focus-within .metadata-property-icon {
+  opacity: 0.6;
+}
+
+/* 属性键文字 */
 .metadata-property-key-input {
   color: var(--text-faint);
   font-family: var(--font-interface-theme);
+  font-weight: 500;
 }
 
+/* 属性值文字 */
 .metadata-property-value {
   color: var(--text-normal);
 }
 
+/* Tags 胶囊：仅在属性区改为描边风格 */
+.metadata-property-value[data-property-type="tags"] .multi-select-pill {
+  --pill-background: transparent;
+  --pill-background-hover: rgba(217, 119, 87, 0.08);
+  --pill-border-width: 1px;
+  --pill-border-color: var(--interactive-accent);
+  --pill-border-color-hover: var(--interactive-accent);
+  --pill-color: var(--interactive-accent);
+  --pill-color-hover: var(--interactive-accent);
+  --pill-color-remove: var(--interactive-accent);
+  --pill-color-remove-hover: var(--text-error);
+  --pill-padding-x: var(--tag-padding-x);
+  --pill-padding-y: var(--tag-padding-y);
+  --pill-radius: var(--radius-pill);
+  font-weight: 500;
+  font-size: 0.92em;
+}
+
+/* 「+ 添加属性」按钮 */
 .metadata-add-button {
   color: var(--text-faint);
   font-family: var(--font-interface-theme);
-  font-size: 0.8em;
-  opacity: 0.7;
-  transition: opacity var(--anim-fast);
+  font-size: 0.78em;
+  opacity: 0.5;
+  transition: opacity var(--anim-fast), color var(--anim-fast);
 }
 
 .metadata-add-button:hover {
   opacity: 1;
   color: var(--text-accent);
-  background: var(--color-accent-2);
-  border-radius: var(--radius-s);
+  background: transparent;
 }
 
 /* 属性区所有 input：覆盖全局白底样式（变量级联在此上下文中不可靠） */
@@ -1354,7 +1414,7 @@ input.metadata-property-key-input:focus-visible,
   outline: none !important;
 }
 
-/* 属性行 focus：inset box-shadow 替代 outline（避免分界处亚像素渲染点） */
+/* 属性行 focus：inset box-shadow 替代 outline */
 .metadata-property.has-focus,
 .metadata-property:focus-within {
   outline: none;
