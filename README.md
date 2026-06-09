@@ -35,8 +35,10 @@ Typography is tuned for mixed English and Chinese notes. The public theme uses o
 Folio styles the parts of Obsidian that are most visible during daily writing:
 
 - **Callouts:** distinct accent palettes for `info`, `warning`, `error` / `danger`, `success` / `tip`, `question`, `quote`, `abstract` / `summary`, and `example`
-- **Tables:** bordered editorial tables with tuned header spacing, row hover states, and transparent inline code inside table cells
-- **Dataview:** compact Dataview table spacing using scoped table variables for better density
+- **Tables:** completely borderless-grid editorial tables. Subtle clay-colored outer border with 8px rounded corners, bold contrast headers, and a faint background elevation that visually detaches the table area from the page.
+  <br><img src="https://raw.githubusercontent.com/elijahchan2019/obsidian-folio-theme/main/table-showcase.png" alt="Folio Table Design" width="80%">
+- **Blockquotes:** magazine-inspired editorial quotes. Features a completely invisible border, a delicate SVG serif quotation mark in a warm clay color, and elegant text indentation.
+  <br><img src="https://raw.githubusercontent.com/elijahchan2019/obsidian-folio-theme/main/blockquote-showcase.png" alt="Folio Blockquote Design" width="80%">
 - **Code:** warm syntax colors for keywords, strings, numbers, comments, functions, types, properties, operators, and variables
 - **Navigation:** active file and outline indicators with clay accent strips for stronger orientation
 - **Metadata:** transparent property fields with subtle hover and focus states

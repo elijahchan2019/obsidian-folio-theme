@@ -1,5 +1,5 @@
 /* ============================================================
-   Folio — Obsidian Theme  v1.0.7
+   Folio — Obsidian Theme  v1.0.8
    字体: Inter · Lora · Instrument Sans · JetBrains Mono
    色彩: Ivory #FAF9F5 · Slate #141413 · Clay #D97757
    ============================================================*/
@@ -20,6 +20,8 @@ body {
   --radius-xl:  24px;  /* image hero */
   --radius-pill: 100vw; /* tags, toggles */
 
+  /* ── 核心组件覆写 ── */
+  --blockquote-border-thickness: 0px !important;
 
   /* ── 过渡（统一速率，不在组件里各写各的） ── */
   --anim-fast:   0.15s cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -436,22 +438,70 @@ body.theme-dark {
 
 /* ── 引用块 ── */
 
-blockquote,
-.markdown-rendered blockquote,
-.HyperMD-quote {
-  border-left: 2px solid var(--interactive-accent);
-  background: transparent;
-  border-radius: 0;
-  padding: 2px 0 2px 20px;
-  margin: 1.2em 0;
-  font-style: italic;
+/* ── 阅读模式 ── */
+.markdown-rendered blockquote {
+  position: relative;
+  border-left: none !important;
+  background: transparent !important;
+  padding: 0 0 0 28px !important; 
+  margin: 1.5em 0;
+  font-style: normal;
   color: var(--text-muted);
+}
+/* 小巧精致的设计感引号 SVG */
+.markdown-rendered blockquote::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 14px;
+  height: 14px;
+  opacity: 0.45;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23b08968'><path d='M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z'/></svg>");
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
 }
 
 .markdown-rendered blockquote p {
-  font-size: 1em;
+  font-size: 0.95em;
   line-height: 1.6;
   margin-bottom: 0;
+}
+
+/* ── 实时预览模式 (Live Preview) ── */
+.markdown-source-view.mod-cm6 .HyperMD-quote {
+  border-left: none !important;
+  background: transparent !important;
+  font-style: normal !important;
+  color: var(--text-muted) !important;
+}
+
+/* 彻底消灭原生的左侧实线！ */
+.markdown-source-view.mod-cm6 .cm-blockquote-border {
+  display: none !important;
+}
+
+/* 将原本的 > 符号伪装成小巧的设计感引号 */
+.markdown-source-view.mod-cm6 .cm-formatting-quote {
+  color: transparent !important;
+  position: relative;
+  display: inline-block;
+  width: 28px; /* 与阅读模式的 28px padding 保持完美一致 */
+}
+
+.markdown-source-view.mod-cm6 .cm-formatting-quote::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 14px;
+  height: 14px;
+  opacity: 0.45;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23b08968'><path d='M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z'/></svg>");
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
 }
 
 /* ── 代码 ── */
@@ -1120,55 +1170,47 @@ input[type='range']::-webkit-slider-thumb:hover {
 
 .markdown-rendered table,
 .cm-embed-block table {
-  width: 100%;
+  width: fit-content;
   border-collapse: collapse;
   font-family: var(--font-interface-theme);
-  font-size: 0.88em;
   margin: 16px 0 20px 0;
 
-  /* 外边框 + 圆角 */
-  border: 1px solid var(--background-modifier-border);
-  border-radius: var(--radius-m);
+  /* 优雅的外框：使用与 H1 呼应的沙色/陶土色，但更轻盈 (50% 透明度) */
+  border: 1px solid rgba(176, 137, 104, 0.5);
+  border-radius: 8px;
   overflow: hidden;
+  /* 浅浅的背景色，使表格区域从正文中脱离出来 */
+  background-color: var(--background-primary-alt);
 }
 
 .markdown-rendered th,
 .cm-embed-block th {
   color: var(--text-normal);
   font-weight: 700;
-  letter-spacing: 0.01em;
+  font-size: calc(var(--font-text-size) * 0.7) !important;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   text-align: left;
   padding: var(--table-header-padding-y) var(--table-header-padding-x);
 
-  background: var(--background-secondary-alt) !important;
-  border-bottom: 2px solid var(--background-modifier-border);
-  border-right: 1px solid var(--background-modifier-border);
+  background: transparent !important;
+  border-bottom: 1px solid var(--background-modifier-border);
+  /* 去除竖向分割线 */
+  border-right: none !important;
+  border-left: none !important;
 }
 
 /* 禁用表头交替背景 */
 .markdown-rendered thead th:nth-child(odd),
 .markdown-rendered thead th:nth-child(even),
-.markdown-rendered th:nth-child(odd),
-.markdown-rendered th:nth-child(even),
 .cm-embed-block thead th:nth-child(odd),
-.cm-embed-block thead th:nth-child(even),
-.cm-embed-block th:nth-child(odd),
-.cm-embed-block th:nth-child(even) {
-  background: var(--background-secondary-alt) !important;
-}
-
-.markdown-rendered thead tr,
-.markdown-rendered thead tr:nth-child(odd),
-.markdown-rendered thead tr:nth-child(even),
-.cm-embed-block thead tr,
-.cm-embed-block thead tr:nth-child(odd),
-.cm-embed-block thead tr:nth-child(even) {
+.cm-embed-block thead th:nth-child(even) {
   background: transparent !important;
 }
 
-.markdown-rendered th:last-child,
-.cm-embed-block th:last-child {
-  border-right: none;
+.markdown-rendered thead tr,
+.cm-embed-block thead tr {
+  background: transparent !important;
 }
 
 /* 第一列不换行 */
@@ -1183,15 +1225,42 @@ input[type='range']::-webkit-slider-thumb:hover {
 .cm-embed-block td {
   padding: var(--table-padding-y) var(--table-padding-x);
   color: var(--text-normal);
+  font-size: calc(var(--font-text-size) * 0.85) !important;
   line-height: var(--table-line-height);
-  border-right: 1px solid var(--background-modifier-border);
-  border-bottom: 1px solid var(--background-modifier-border);
+  
+  border-bottom: 1px solid rgba(var(--background-modifier-border-rgb), 0.5);
+  /* 去除竖向分割线 */
+  border-right: none !important;
+  border-left: none !important;
 }
 
-/* 确保编辑模式 (Live Preview) 的表格单元格也读取一致的间距变量与字号 */
+/* 最后一行去底边框 */
+.markdown-rendered tr:last-child td,
+.cm-embed-block tr:last-child td {
+  border-bottom: none;
+}
+
+/* 悬停效果回归官方原生变量 */
+.markdown-rendered tbody tr {
+  transition: background-color var(--anim-fast);
+}
+.markdown-rendered tbody tr:hover {
+  background-color: var(--table-row-background-hover);
+}
+
+/* 确保编辑模式 (Live Preview) 走官方架构，仅覆盖内边距和竖线 */
 .markdown-source-view.mod-cm6 .cm-table-widget {
-  font-size: 0.88em;
   line-height: var(--table-line-height);
+  width: fit-content;
+  /* 取消官方的负边距，让外框整体右移，对齐段落文字 */
+  margin-inline-start: 0 !important;
+  margin-left: 0 !important;
+  /* 优雅外框与圆角同步 */
+  border: 1px solid rgba(176, 137, 104, 0.5) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  /* 浅浅的背景色，使表格区域从正文中脱离出来 */
+  background-color: var(--background-primary-alt) !important;
 }
 .markdown-source-view.mod-cm6 .cm-table-widget td .table-cell-wrapper {
   padding: var(--table-padding-y) var(--table-padding-x);
@@ -1199,15 +1268,23 @@ input[type='range']::-webkit-slider-thumb:hover {
 .markdown-source-view.mod-cm6 .cm-table-widget th .table-cell-wrapper {
   padding: var(--table-header-padding-y) var(--table-header-padding-x);
 }
-
-.markdown-rendered td:last-child,
-.cm-embed-block td:last-child {
-  border-right: none;
+/* 编辑模式也去除竖线 */
+.markdown-source-view.mod-cm6 .cm-table-widget-row .cm-table-widget-cell {
+  border-right: none !important;
+  border-left: none !important;
+}
+.markdown-source-view.mod-cm6 .cm-table-widget-row:first-child .cm-table-widget-cell {
+  background: transparent !important;
+  color: var(--text-normal) !important;
+  font-weight: 700 !important;
+  font-size: calc(var(--font-text-size) * 0.7) !important;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--background-modifier-border) !important;
 }
 
-.markdown-rendered tr:last-child td,
-.cm-embed-block tr:last-child td {
-  border-bottom: none;
+.markdown-source-view.mod-cm6 .cm-table-widget-row .cm-table-widget-cell {
+  font-size: calc(var(--font-text-size) * 0.85) !important;
 }
 
 /* 表格内 code：去掉背景/边框 */
