@@ -1,6 +1,6 @@
 # Folio
 
-<img src="https://raw.githubusercontent.com/elijahchan2019/obsidian-folio-theme/main/screenshot.png" alt="Folio preview" width="100%">
+![Folio preview](screenshot.png)
 
 Folio is a warm, editorial Obsidian theme for reading, writing, and research. It pairs an ivory canvas with clay accents, book-like spacing, and refined typography so long notes feel closer to a manuscript than a generic app screen.
 
@@ -35,10 +35,8 @@ Typography is tuned for mixed English and Chinese notes. The public theme uses o
 Folio styles the parts of Obsidian that are most visible during daily writing:
 
 - **Callouts:** distinct accent palettes for `info`, `warning`, `error` / `danger`, `success` / `tip`, `question`, `quote`, `abstract` / `summary`, and `example`
-- **Tables:** completely borderless-grid editorial tables. Subtle clay-colored outer border with 8px rounded corners, bold contrast headers, and a faint background elevation that visually detaches the table area from the page.
-  <br><img src="https://raw.githubusercontent.com/elijahchan2019/obsidian-folio-theme/main/table-showcase.png" alt="Folio Table Design" width="80%">
-- **Blockquotes:** magazine-inspired editorial quotes. Features a completely invisible border, a delicate SVG serif quotation mark in a warm clay color, and elegant text indentation.
-  <br><img src="https://raw.githubusercontent.com/elijahchan2019/obsidian-folio-theme/main/blockquote-showcase.png" alt="Folio Blockquote Design" width="80%">
+- **Tables:** completely borderless-grid editorial tables with a subtle clay-colored outer border, 8px rounded corners, bold contrast headers, and a faint background elevation.
+- **Blockquotes:** magazine-inspired editorial quotes with an invisible border, a delicate serif quotation mark, and elegant text indentation.
 - **Code:** warm syntax colors for keywords, strings, numbers, comments, functions, types, properties, operators, and variables
 - **Navigation:** active file and outline indicators with clay accent strips for stronger orientation
 - **Metadata:** transparent property fields with subtle hover and focus states
