@@ -1,6 +1,6 @@
 # Folio
 
-[中文介绍](README.zh-CN.md)
+[中文介绍](https://github.com/elijahchan2019/obsidian-folio-theme/blob/main/README.zh-CN.md)
 
 ![Folio preview](screenshot.png)
 
