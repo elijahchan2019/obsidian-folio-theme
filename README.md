@@ -1,5 +1,7 @@
 # Folio
 
+[中文介绍](README.zh-CN.md)
+
 ![Folio preview](screenshot.png)
 
 Folio is a warm editorial theme for Obsidian. It gives long notes a manuscript-like reading surface, with ivory backgrounds, clay accents, refined typography, and quiet interface polish for writing, research, and daily knowledge work.
