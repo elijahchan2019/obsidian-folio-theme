@@ -1,5 +1,5 @@
 /* ============================================================
-   Folio — Obsidian Theme  v1.0.8
+   Folio — Obsidian Theme  v1.0.9
    字体: Inter · Lora · Instrument Sans · JetBrains Mono
    色彩: Ivory #FAF9F5 · Slate #141413 · Clay #D97757
    ============================================================*/
@@ -23,7 +23,7 @@ body {
   /* ── 核心组件覆写 ── */
   --blockquote-border-thickness: 0px;
   --checkbox-radius:             50%;
-  --checkbox-size:               18px;
+  --checkbox-size:               16px;
   --checkbox-border-width:       1.5px;
   --checkbox-border-color:       rgba(20, 20, 19, 0.2);
   --checkbox-border-color-hover: var(--interactive-accent);
@@ -35,14 +35,17 @@ body {
   --anim-fast:   0.15s cubic-bezier(0.215, 0.61, 0.355, 1);
   --anim-medium: 0.2s  ease;
 
+  /* ── 共享 SVG 资源（一处维护） ── */
+  --quote-icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23b08968'><path d='M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z'/></svg>");
+
   /* ── 标题字号（Obsidian 读取 --h1-size 等来渲染编辑器） ── */
   --inline-title-size: 1.75em;
-  --h1-size: 1.55em;
-  --h2-size: 1.35em;
-  --h3-size: 1.25em;
-  --h4-size: 1.15em;
-  --h5-size: 1.05em;
-  --h6-size: 1.0em;
+  --h1-size: 1.3em;
+  --h2-size: 1.15em;
+  --h3-size: 1.05em;
+  --h4-size: 1.0em;
+  --h5-size: 0.92em;
+  --h6-size: 0.88em;
 
   /* ── Callout 颜色（典雅书卷色板，模式无关） ── */
   --callout-color-info:     #6A9BCC;   /* Sky */
@@ -63,6 +66,7 @@ body {
   --table-header-padding-x: 10px;
   --table-header-padding-y: 7px;
   --table-line-height: 1.35;
+  --table-frame-color: rgba(176, 137, 104, 0.5);  /* 表格外框沙色，与 H1 呼应 */
 
   /* ── Mermaid 图表字体 ── */
   --font-mermaid: var(--font-interface-theme);
@@ -169,8 +173,8 @@ body.theme-light {
   --prompt-border-color: rgba(20, 20, 19, 0.08);
 
   /* 表格（官方变量 + 强制禁用交替效果） */
-  --table-column-alt-background:   transparent !important;
-  --table-row-alt-background:      transparent !important;
+  --table-column-alt-background:   transparent;
+  --table-row-alt-background:      transparent;
   --table-row-background-hover:    rgba(20, 20, 19, 0.03);  /* 极淡悬停 */
   --tooltip-bg:    #141413;
   --tooltip-color: #FAF9F5;
@@ -284,8 +288,8 @@ body.theme-dark {
   --bg-text-tint:  rgba(250, 249, 245, 0.07);
 
   /* 表格（官方变量 + 强制禁用交替效果） */
-  --table-column-alt-background:   transparent !important;
-  --table-row-alt-background:      transparent !important;
+  --table-column-alt-background:   transparent;
+  --table-row-alt-background:      transparent;
   --table-row-background-hover:    rgba(250, 249, 245, 0.04);  /* 极淡悬停 */
 
   /* 阴影体系（统一为完整声明，而非单层颜色） */
@@ -472,7 +476,7 @@ body.theme-dark {
   width: 14px;
   height: 14px;
   opacity: 0.45;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23b08968'><path d='M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z'/></svg>");
+  background-image: var(--quote-icon);
   background-size: contain;
   background-repeat: no-repeat;
   pointer-events: none;
@@ -513,7 +517,7 @@ body.theme-dark {
   width: 14px;
   height: 14px;
   opacity: 0.45;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23b08968'><path d='M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z'/></svg>");
+  background-image: var(--quote-icon);
   background-size: contain;
   background-repeat: no-repeat;
   pointer-events: none;
@@ -522,8 +526,8 @@ body.theme-dark {
 /* ── 代码 ── */
 
 /* 行内代码（编辑器 + 阅读模式统一） */
-code,
 .cm-inline-code,
+.cm-s-obsidian .cm-inline-code,
 .markdown-rendered code {
   font-family: var(--font-monospace-theme);
   background: var(--background-secondary-alt);
@@ -534,19 +538,7 @@ code,
   color: var(--text-normal);
 }
 
-/* Live Preview 行内代码确保一致性 */
-.cm-s-obsidian .cm-inline-code {
-  font-family: var(--font-monospace-theme);
-  background: var(--background-secondary-alt);
-  border: 1px solid var(--background-modifier-border);
-  border-radius: var(--radius-s);
-  padding: 2px 6px;
-  font-size: 0.85em;
-  color: var(--text-normal);
-}
-
 /* 代码块 (阅读视图 & 渲染的嵌入代码块) */
-pre,
 .markdown-rendered pre {
   font-family: var(--font-monospace-theme);
   background: var(--background-primary-alt);
@@ -729,7 +721,9 @@ a.tag {
   border-radius: var(--checkbox-radius);
   background: transparent;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  /* 弹性回弹：勾选时填充"落定"（reduced-motion 下由全局规则禁用） */
+  transition: background-color 0.22s cubic-bezier(0.34, 1.4, 0.64, 1),
+              border-color     0.22s cubic-bezier(0.34, 1.4, 0.64, 1);
   vertical-align: middle;
   position: relative;
 }
@@ -741,17 +735,31 @@ a.tag {
 .task-list-item-checkbox:checked {
   background: var(--checkbox-color);
   border-color: var(--checkbox-color);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23FAF9F5' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13.25 4.75L6 12L2.75 8.75'/%3E%3C/svg%3E");
-  background-size: 70%;
-  background-position: center;
-  background-repeat: no-repeat;
+}
+
+/* 极简短勾 — 必须走 Obsidian 原生 ::after mask 通道：
+   原生对勾以 ::after 蒙版绘制在最上层，input 的 background-image
+   会被它整个盖住（此前改勾"不生效"的根因），故在同一通道替换造型 */
+.task-list-item-checkbox:checked::after {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--checkbox-marker-color);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M10.6 6 L7.2 9.9 L5.4 8.1' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M10.6 6 L7.2 9.9 L5.4 8.1' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100%;
+  mask-size: 100%;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
 /* 伪元素扩大点击范围（不影响布局） */
 .task-list-item-checkbox::after {
   content: '';
   position: absolute;
-  inset: -13px;
+  inset: -6px;
 }
 
 
@@ -830,11 +838,10 @@ a.tag {
 .workspace-split.mod-left-split,
 .workspace-split.mod-right-split {
   background: var(--background-secondary);
-  will-change: transform;
 }
 
 .workspace-leaf-content {
-  contain: paint style;
+  contain: paint;
 }
 
 /* ── 大纲视图（TOC）与正文标题字体族统一 ── */
@@ -852,7 +859,9 @@ a.tag {
 }
 .workspace-leaf-content[data-type="outline"] .tree-item-self::before,
 .outline-view-container .tree-item-self::before,
-.outline-item-self::before {
+.outline-item-self::before,
+.nav-file-title::before,
+.nav-folder-title::before {
   content: '';
   position: absolute;
   left: 2px;
@@ -867,12 +876,16 @@ a.tag {
 }
 .workspace-leaf-content[data-type="outline"] .tree-item-self:hover::before,
 .outline-view-container .tree-item-self:hover::before,
-.outline-item-self:hover::before {
+.outline-item-self:hover::before,
+.nav-file-title:hover::before,
+.nav-folder-title:hover::before {
   transform: scaleY(1);
 }
 .workspace-leaf-content[data-type="outline"] .tree-item-self.is-active::before,
 .outline-view-container .tree-item-self.is-active::before,
-.outline-item-self.is-active::before {
+.outline-item-self.is-active::before,
+.nav-file-title.is-active::before,
+.nav-folder-title.is-active::before {
   transform: scaleY(1);
   width: 2.5px;
   background-color: var(--callout-color-clay);
@@ -880,13 +893,11 @@ a.tag {
 
 .workspace-leaf-resize-handle {
   border-color: var(--background-modifier-border);
-  will-change: transform;
 }
 
 .markdown-preview-view,
 .markdown-source-view {
   overscroll-behavior-y: contain;
-  will-change: scroll-position;
   /* ── 纸张微质感（高硬度平铺底噪，对 GPU 滚动 100% 零损耗） ── */
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E") !important;
 }
@@ -902,30 +913,6 @@ a.tag {
   font-family: var(--font-interface-theme);
   font-size: 0.9em;
   transition: background var(--anim-fast), color var(--anim-fast);
-}
-.nav-file-title::before,
-.nav-folder-title::before {
-  content: '';
-  position: absolute;
-  left: 2px;
-  top: 22%;
-  height: 56%;
-  width: 2px;
-  background-color: var(--callout-color-clay);
-  border-radius: 2px;
-  transform: scaleY(0);
-  transform-origin: center;
-  transition: transform 0.22s cubic-bezier(0.25, 1, 0.5, 1);
-}
-.nav-file-title:hover::before,
-.nav-folder-title:hover::before {
-  transform: scaleY(1);
-}
-.nav-file-title.is-active::before,
-.nav-folder-title.is-active::before {
-  transform: scaleY(1);
-  width: 2.5px;
-  background-color: var(--callout-color-clay);
 }
 .nav-file-title:hover,
 .nav-folder-title:hover {
@@ -1174,17 +1161,25 @@ input[type='range']::-webkit-slider-thumb:hover {
   color: var(--text-normal);
 }
 
-.callout[data-callout='info']     { --callout-accent: var(--callout-color-info);    background: rgba(106, 155, 204, 0.06); color: #1a365d; }
-.callout[data-callout='warning']  { --callout-accent: var(--callout-color-warning); background: rgba(212, 162, 127, 0.06); color: #7a4a23; }
+.callout[data-callout='info']     { --callout-accent: var(--callout-color-info);    background: rgba(106, 155, 204, 0.06); }
+.callout[data-callout='warning']  { --callout-accent: var(--callout-color-warning); background: rgba(212, 162, 127, 0.06); }
 .callout[data-callout='error'],
-.callout[data-callout='danger']   { --callout-accent: var(--callout-color-error);   background: rgba(196, 102, 134, 0.06); color: #7a1a3a; }
+.callout[data-callout='danger']   { --callout-accent: var(--callout-color-error);   background: rgba(196, 102, 134, 0.06); }
 .callout[data-callout='success'],
-.callout[data-callout='tip']      { --callout-accent: var(--callout-color-success); background: rgba(120, 140, 93, 0.06); color: #3d5a1a; }
+.callout[data-callout='tip']      { --callout-accent: var(--callout-color-success); background: rgba(120, 140, 93, 0.06); }
 .callout[data-callout='question'] { --callout-accent: var(--callout-color-clay);    background: rgba(217, 119, 87, 0.06); }
 .callout[data-callout='quote']    { --callout-accent: var(--callout-color-slate);   background: rgba(94, 93, 89, 0.04); }
 .callout[data-callout='abstract'],
 .callout[data-callout='summary']  { --callout-accent: var(--callout-color-heather); background: rgba(130, 125, 189, 0.06); }
 .callout[data-callout='example']  { --callout-accent: var(--callout-color-clay); }
+
+/* 染色正文仅限亮色模式（暗色下深色文字不可读，回退 --text-normal） */
+body.theme-light .callout[data-callout='info']    { color: #1a365d; }
+body.theme-light .callout[data-callout='warning'] { color: #7a4a23; }
+body.theme-light .callout[data-callout='error'],
+body.theme-light .callout[data-callout='danger']  { color: #7a1a3a; }
+body.theme-light .callout[data-callout='success'],
+body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
 
 /* ── 表格 ──────────────────────────────────────────────────────
    社论增强版风格（精细排版）：
@@ -1203,7 +1198,7 @@ input[type='range']::-webkit-slider-thumb:hover {
   margin: 16px 0 20px 0;
 
   /* 优雅的外框：使用与 H1 呼应的沙色/陶土色，但更轻盈 (50% 透明度) */
-  border: 1px solid rgba(176, 137, 104, 0.5);
+  border: 1px solid var(--table-frame-color);
   border-radius: 8px;
   overflow: hidden;
   /* 浅浅的背景色，使表格区域从正文中脱离出来 */
@@ -1283,7 +1278,7 @@ input[type='range']::-webkit-slider-thumb:hover {
   margin-inline-start: 0 !important;
   margin-left: 0 !important;
   /* 优雅外框与圆角同步 */
-  border: 1px solid rgba(176, 137, 104, 0.5) !important;
+  border: 1px solid var(--table-frame-color) !important;
   border-radius: 8px !important;
   overflow: hidden;
   /* 浅浅的背景色，使表格区域从正文中脱离出来 */
@@ -1344,12 +1339,6 @@ input[type='range']::-webkit-slider-thumb:hover {
   margin-right: auto;
 }
 
-/* 长笔记滚动优化：跳过屏幕外内容块的布局与绘制 */
-.markdown-preview-sizer > div {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 150px;
-}
-
 .markdown-rendered img {
   border-radius: var(--radius-l);
   display: block;
@@ -1369,7 +1358,7 @@ input[type='range']::-webkit-slider-thumb:hover {
 /* ── 选区 ── */
 
 ::selection {
-  background: rgba(217, 119, 87, 0.15);
+  background: rgba(var(--interactive-accent-rgb), 0.15);
 }
 
 /* ── Frontmatter / 属性 ──────────────────────────────────────
@@ -1460,7 +1449,7 @@ input[type='range']::-webkit-slider-thumb:hover {
 /* Tags 胶囊：仅在属性区改为描边风格 */
 .metadata-property-value[data-property-type="tags"] .multi-select-pill {
   --pill-background: transparent;
-  --pill-background-hover: rgba(217, 119, 87, 0.08);
+  --pill-background-hover: rgba(var(--interactive-accent-rgb), 0.08);
   --pill-border-width: 1px;
   --pill-border-color: var(--interactive-accent);
   --pill-border-color-hover: var(--interactive-accent);
@@ -1766,7 +1755,7 @@ select:focus-visible,
 /* ── 高对比度模式支持 ───────────────────────────────────── */
 
 @media (prefers-contrast: high) {
-  :root {
+  body.theme-light {
     /* 亮色模式：提升文字与背景对比度 */
     --text-normal:          #000000;  /* 纯黑文字 */
     --text-muted:           #333333;  /* 深灰次要文字 */
@@ -1867,8 +1856,11 @@ button:focus-visible .clickable-icon,
 }
 
 /* 按钮、输入框统一比例：水平 padding 大于垂直，避免方形 */
-/* 注意：排除 .clickable-icon（小图标按钮由 Obsidian 原生控制尺寸） */
-button:not(.clickable-icon),
+/* 注意：排除 .clickable-icon；按钮限定 .modal/.prompt/.markdown-rendered，
+   避免裸 button 选择器泄漏到设置页与插件 UI（泄漏后需 !important 补救） */
+.modal button:not(.clickable-icon),
+.prompt button:not(.clickable-icon),
+.markdown-rendered button:not(.clickable-icon),
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -1881,8 +1873,9 @@ select {
 }
 
 /* 按钮额外水平 padding */
-button.mod-cta,
-button:not(.clickable-icon) {
+.modal button:not(.clickable-icon),
+.prompt button:not(.clickable-icon),
+.markdown-rendered button:not(.clickable-icon) {
   padding: 7px 20px;
 }
 
