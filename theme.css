@@ -21,13 +21,22 @@ body {
   --radius-pill: 100vw; /* tags, toggles */
 
   /* ── 核心组件覆写 ── */
-  --blockquote-border-thickness: 0px !important;
+  --blockquote-border-thickness: 0px;
+  --checkbox-radius:             50%;
+  --checkbox-size:               18px;
+  --checkbox-border-width:       1.5px;
+  --checkbox-border-color:       rgba(20, 20, 19, 0.2);
+  --checkbox-border-color-hover: var(--interactive-accent);
+  --checkbox-color:              var(--interactive-accent);
+  --checkbox-color-hover:        var(--interactive-accent);
+  --checkbox-marker-color:       var(--background-primary);
 
   /* ── 过渡（统一速率，不在组件里各写各的） ── */
   --anim-fast:   0.15s cubic-bezier(0.215, 0.61, 0.355, 1);
   --anim-medium: 0.2s  ease;
 
   /* ── 标题字号（Obsidian 读取 --h1-size 等来渲染编辑器） ── */
+  --inline-title-size: 1.75em;
   --h1-size: 1.55em;
   --h2-size: 1.35em;
   --h3-size: 1.25em;
@@ -319,6 +328,12 @@ body.theme-dark {
   line-height: 1.1;   letter-spacing: -0.025em;
   color: var(--h1-color);
   margin-top: 0;      margin-bottom: 0.6em;
+}
+
+.inline-title {
+  font-weight: 700;
+  line-height: 1.1;   letter-spacing: -0.025em;
+  color: var(--h1-color);
 }
 
 .markdown-rendered h2 {
@@ -703,29 +718,41 @@ a.tag {
   padding-left: 1px; padding-right: 10px;
 }
 
-/* ── 复选框 ── */
+/* ── 复选框（Circle Minimal · 圆形极简风） ── */
 
 .task-list-item-checkbox {
   appearance: none;
   -webkit-appearance: none;
-  width: 18px; height: 18px;
-  min-width: 18px; min-height: 18px;
-  border: 2px solid var(--background-modifier-border);
-  border-radius: var(--radius-s);
-  background: var(--background-modifier-form-field);
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  border: var(--checkbox-border-width) solid var(--checkbox-border-color);
+  border-radius: var(--checkbox-radius);
+  background: transparent;
   cursor: pointer;
-  transition: background var(--anim-fast), border-color var(--anim-fast);
+  transition: background 0.2s ease, border-color 0.2s ease;
   vertical-align: middle;
   position: relative;
 }
 
-.task-list-item-checkbox:checked {
-  background: var(--interactive-accent);
-  border-color: var(--interactive-accent);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23FAF9F5' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13.25 4.75L6 12L2.75 8.75'/%3E%3C/svg%3E");
-  background-size: 70%; background-position: center; background-repeat: no-repeat;
+.task-list-item-checkbox:hover {
+  border-color: var(--checkbox-border-color-hover);
 }
-.task-list-item-checkbox:checked::after { display: none; }
+
+.task-list-item-checkbox:checked {
+  background: var(--checkbox-color);
+  border-color: var(--checkbox-color);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23FAF9F5' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13.25 4.75L6 12L2.75 8.75'/%3E%3C/svg%3E");
+  background-size: 70%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 伪元素扩大点击范围（不影响布局） */
+.task-list-item-checkbox::after {
+  content: '';
+  position: absolute;
+  inset: -13px;
+}
 
 
 /* ════════════════════════════════════════════════════════════
@@ -1859,12 +1886,7 @@ button:not(.clickable-icon) {
   padding: 7px 20px;
 }
 
-/* 复选框触摸区域：用 ::after 伪元素扩大点击范围（不影响布局） */
-.task-list-item-checkbox::after {
-  content: '';
-  position: absolute;
-  inset: -13px;
-}
+
 
 /* ── 模态框与对话框可访问性 ──────────────────────────────────── */
 
