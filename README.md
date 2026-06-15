@@ -55,7 +55,22 @@ Folio focuses on the parts of Obsidian that shape the writing day:
 - **Tags and checkboxes:** clay pill tags and filled task checkboxes
 - **Accessibility:** visible keyboard focus, high-contrast mode support, reduced-motion support, and print/PDF-friendly styling
 
+## Recommended Usage & Snippets
+
+In the latest Folio design, heading hierarchy has been optimized:
+
+- **H1**: Recommended for the **main document title**. Its font size has been significantly increased to match the visual weight of the Inline Title.
+- **H2**: Recommended for **section headings**. To make H2 more prominent in long-form writing, we provide a dedicated CSS snippet that applies the theme's signature clay accent color to H2s.
+
+**How to use the H2 color snippet (Optional):**
+1. Download [`folio-h2-color.css`](snippets/folio-h2-color.css) from the `snippets/` directory of this repository.
+2. Place it in your `<vault>/.obsidian/snippets/` directory.
+3. Enable `folio-h2-color` in Obsidian's **Settings -> Appearance -> CSS Snippets**.
+
+This is completely optional and recommended only if you want stronger section breaks in your notes.
+
 ## Installation
+
 
 Install from the Obsidian community theme browser:
 

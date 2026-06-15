@@ -1,0 +1,11 @@
+/*
+ * Folio 专属代码片段：自定义 H2 标题颜色
+ * 颜色值：#B08968 (Clay/Sand 色调)
+ * 作用范围：覆盖阅读模式与编辑模式下的二级标题
+ */
+
+/* 强制应用到阅读模式和 Live Preview 模式的正文 H2 */
+.markdown-rendered h2,
+.markdown-source-view.mod-cm6 .cm-header-2 {
+  color: #B08968 !important;
+}

@@ -40,12 +40,12 @@ body {
 
   /* ── 标题字号（Obsidian 读取 --h1-size 等来渲染编辑器） ── */
   --inline-title-size: 1.75em;
-  --h1-size: 1.3em;
-  --h2-size: 1.15em;
-  --h3-size: 1.05em;
-  --h4-size: 1.0em;
-  --h5-size: 0.92em;
-  --h6-size: 0.88em;
+  --h1-size: 1.75em;
+  --h2-size: 1.3em;
+  --h3-size: 1.15em;
+  --h4-size: 1.05em;
+  --h5-size: 1.0em;
+  --h6-size: 0.92em;
 
   /* ── Callout 颜色（典雅书卷色板，模式无关） ── */
   --callout-color-info:     #6A9BCC;   /* Sky */
