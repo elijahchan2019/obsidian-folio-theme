@@ -7,10 +7,10 @@
 /* ── 字体族（开源平替 + CJK 回退） ── */
 
 body {
-  --font-text-theme:       'Inter', 'Instrument Sans', system-ui, "Segoe UI", Roboto, Helvetica, Arial, "Source Han Sans SC", "Source Han Sans CN", "Noto Sans CJK SC", "思源黑体", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --font-heading-theme:    'Lora', Georgia, "GenRyuMin2 TW", "源流明體月", "GenRyuMin2 TC", "源流明體丹", "GenRyuMin2 JP", "源流明朝", "GenRyuMin", "源流明體", "Source Han Serif SC", "Source Han Serif CN", "Noto Serif CJK SC", "思源宋体", "Songti SC", "STSong", serif;
-  --font-monospace-theme:  'JetBrains Mono', ui-monospace, monospace;
-  --font-interface-theme:  'Instrument Sans', 'Inter', system-ui, "Segoe UI", Roboto, Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-text-theme:       'Anthropic Sans', 'Inter', 'Instrument Sans', system-ui, "Segoe UI", Roboto, Helvetica, Arial, "Source Han Sans SC", "Source Han Sans CN", "Noto Sans CJK SC", "思源黑体", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-heading-theme:    'Anthropic Serif', 'Source Serif 4', 'Source Serif Pro', 'Source Serif', Georgia, "GenRyuMin2 TW", "源流明體月", "GenRyuMin2 TC", "源流明體丹", "GenRyuMin2 JP", "源流明朝", "GenRyuMin", "源流明體", "Source Han Serif SC", "Source Han Serif CN", "Noto Serif CJK SC", "思源宋体", "Songti SC", "STSong", serif;
+  --font-monospace-theme:  'Anthropic Mono', 'JetBrains Mono', ui-monospace, monospace;
+  --font-interface-theme:  'Anthropic Sans', 'Instrument Sans', 'Inter', system-ui, "Segoe UI", Roboto, Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
 
   /* ── 圆角（对齐 Obsidian 官方变量，不自造） ── */
   /* Obsidian 1.x 已内置 --radius-s/m/l/xl，此处仅确认值 */
