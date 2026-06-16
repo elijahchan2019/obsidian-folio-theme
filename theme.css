@@ -436,26 +436,40 @@ body.theme-dark {
 
 /* ── 链接（仅内容区，不干扰侧边栏等 UI 链接） ── */
 
-/* 链接颜色说明：Obsidian 内链用 Clay 色（符合产品习惯）
-   在 Obsidian 中提供更好的视觉导航，适合知识图谱的双向链接特性 */
+/* 方案 A：隐匿修饰线（Ghost Underline）
+   核心设计哲学：
+   1. 静态克制：完全融入上下文环境（自动继承文字颜色，下划线自带 40% 透明度）
+   2. 交互清晰：触碰时给予强烈的视觉反馈（统一亮起主题陶土色）
+   3. 极简纯净：彻底清除 Obsidian 原生附带的杂乱图标和背景
+*/
 .markdown-rendered a,
-.cm-link .cm-url,
+.markdown-source-view.mod-cm6 a,
+.cm-link,
+.cm-url,
 .internal-link,
-.external-link {
-  color: var(--text-accent);
-  text-decoration: none;
-  transition: color var(--anim-fast);
-  background-image: none;
-  padding-inline-end: 0;
+.external-link,
+.markdown-source-view.mod-cm6 .cm-hmd-internal-link {
+  color: inherit !important;
+  text-decoration: underline !important;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent) !important; 
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 4px !important;
+  text-decoration-skip-ink: auto !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: all 0.2s ease;
 }
 
 .markdown-rendered a:hover,
+.markdown-source-view.mod-cm6 a:hover,
+.cm-link:hover,
 .internal-link:hover,
-.external-link:hover {
-  color: var(--text-accent-hover);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
+.external-link:hover,
+.markdown-source-view.mod-cm6 .cm-hmd-internal-link:hover {
+  color: var(--text-accent) !important;
+  text-decoration-color: var(--text-accent) !important;
 }
 
 /* ── 引用块 ── */
@@ -524,6 +538,12 @@ body.theme-dark {
   background-size: contain;
   background-repeat: no-repeat;
   pointer-events: none;
+}
+
+/* 核心魔法：如果当前行是引用块，且上一行也是引用块，则隐藏当前行的引号图标。
+   这样就能把多行引用在 Live Preview 中视觉上合并成一个完整的引用块！*/
+.cm-line.HyperMD-quote + .cm-line.HyperMD-quote .cm-formatting-quote::before {
+  display: none !important;
 }
 
 /* ── 代码 ── */
