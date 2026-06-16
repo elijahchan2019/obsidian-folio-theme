@@ -37,6 +37,8 @@ body {
 
   /* ── 共享 SVG 资源（一处维护） ── */
   --quote-icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23b08968'><path d='M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z'/></svg>");
+  /* Obsidian 官方 logo 几何线稿（轮廓 + 真实切面缝线，源自官方 SVG 路径，作蒙版用 stroke=black） */
+  --obsidian-gem-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none' stroke='black' stroke-width='34' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M382.3 475.6c-3.1 23.4-26 41.6-48.7 35.3-32.4-8.9-69.9-22.8-103.6-25.4l-51.7-4a34 34 0 0 1-22-10.2l-89-91.7a34 34 0 0 1-6.7-37.7s55-121 57.1-127.3c2-6.3 9.6-61.2 14-90.6 1.2-7.9 5-15 11-20.3L248 8.9a34.1 34.1 0 0 1 49.6 4.3L386 125.6a37 37 0 0 1 7.6 22.4c0 21.3 1.8 65 13.6 93.2 11.5 27.3 32.5 57 43.5 71.5a17.3 17.3 0 0 1 1.3 19.2 1494 1494 0 0 1-44.8 70.6c-15 22.3-21.9 49.9-25 73.1z'/%3E%3Cpath d='M278.4 307.8c-19.7-49.4-25.8-86.4-24.5-115.9a171 171 0 0 1 19.4-71c2.3-4.8 4.8-9.5 7.2-14.1 7.1-13.9 14-27 17.6-41.4a96 96 0 0 0-2-54'/%3E%3Cpath d='M188.5 291.3c17.6 42.8 18.8 103-22.6 187'/%3E%3Cpath d='M311.3 315.4c-36-13.4-75.2-9-115 .7'/%3E%3C/svg%3E");
 
   /* ── 标题字号（Obsidian 读取 --h1-size 等来渲染编辑器） ── */
   --inline-title-size: 1.75em;
@@ -1940,6 +1942,271 @@ select {
   box-shadow: var(--shadow-modal), 0 0 0 4px var(--interactive-accent);
 }
 
+
+/* ════════════════════════════════════════════════════════════
+   SIDEBAR NOTION OVERHAUL (侧边栏极致极简改造)
+   ════════════════════════════════════════════════════════════ */
+
+/* 1. 极致动效：Velocity 风格的侧边栏顶部工具栏 (左右侧边栏通用)
+   光标移入时极其平滑展开，移除突兀背景，让图标浮空。
+*/
+.workspace-split.mod-left-split .workspace-leaf-content,
+.workspace-split.mod-right-split .workspace-leaf-content {
+  position: relative !important;
+}
+
+/* A. 导航栏 (nav-header)：负责指示线和折叠展开功能 */
+.workspace-split.mod-left-split .nav-header,
+.workspace-split.mod-right-split .nav-header {
+  height: auto !important;
+  min-height: 12px !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.workspace-split.mod-left-split .nav-header::before,
+.workspace-split.mod-right-split .nav-header::before {
+  content: "";
+  display: block;
+  width: 32px;
+  height: 3px;
+  border-radius: 2px;
+  background-color: var(--background-modifier-border);
+  margin: 6px auto 0 auto;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+}
+
+.workspace-split.mod-left-split .nav-header:hover::before,
+.workspace-split.mod-right-split .nav-header:hover::before {
+  opacity: 0;
+}
+
+.workspace-split.mod-left-split .nav-header-title,
+.workspace-split.mod-right-split .nav-header-title {
+  display: none !important;
+}
+
+/* 工具栏容器：左右侧边栏统一动画 */
+.workspace-split.mod-left-split .nav-buttons-container,
+.workspace-split.mod-right-split .nav-buttons-container {
+  display: flex !important;
+  justify-content: center;
+  gap: 8px;
+  overflow: hidden;
+  height: 0;
+  opacity: 0;
+  margin-top: 0;
+  interpolate-size: allow-keywords; 
+  transition: height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.2s ease, margin-top 0.3s ease !important;
+  pointer-events: none;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding: 0 12px;
+}
+
+.workspace-split.mod-left-split .nav-header:hover .nav-buttons-container,
+.workspace-split.mod-right-split .nav-header:hover .nav-buttons-container {
+  height: 36px; 
+  height: fit-content; 
+  opacity: 1;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  pointer-events: auto;
+}
+
+/* B. 视图头 (view-header)：修复双横栏 Bug，剥离成悬浮在右上角的独立动作区 */
+.workspace-split.mod-left-split .view-header,
+.workspace-split.mod-right-split .view-header {
+  position: absolute !important;
+  top: 6px;
+  right: 6px;
+  height: auto !important;
+  min-height: 0 !important;
+  background-color: transparent !important;
+  border: none !important;
+  z-index: 10;
+  pointer-events: none;
+  padding: 0 !important;
+  display: flex !important;
+}
+
+/* 隐藏原生多余的标题，以及导致空隙和箭头的导航按钮 (返回/前进) */
+.workspace-split.mod-left-split .view-header-title-container,
+.workspace-split.mod-right-split .view-header-title-container,
+.workspace-split.mod-left-split .view-header-nav-buttons,
+.workspace-split.mod-right-split .view-header-nav-buttons {
+  display: none !important;
+}
+
+/* 只有光标移入当前面板时，才平滑显示 "..." 分屏选项等按钮 */
+.workspace-split.mod-left-split .view-actions,
+.workspace-split.mod-right-split .view-actions {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.workspace-split.mod-left-split .workspace-leaf-content:hover .view-actions,
+.workspace-split.mod-right-split .workspace-leaf-content:hover .view-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* C. 所有侧边栏图标的美化微调 */
+.workspace-split.mod-left-split .nav-buttons-container .clickable-icon,
+.workspace-split.mod-right-split .nav-buttons-container .clickable-icon,
+.workspace-split.mod-left-split .view-actions .clickable-icon,
+.workspace-split.mod-right-split .view-actions .clickable-icon {
+  padding: 6px !important;
+  opacity: 0.6;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.workspace-split.mod-left-split .nav-buttons-container .clickable-icon:hover,
+.workspace-split.mod-right-split .nav-buttons-container .clickable-icon:hover,
+.workspace-split.mod-left-split .view-actions .clickable-icon:hover,
+.workspace-split.mod-right-split .view-actions .clickable-icon:hover {
+  opacity: 1;
+  background-color: var(--background-modifier-hover) !important;
+  color: var(--interactive-accent);
+  border-radius: var(--radius-s);
+}
+
+.workspace-split.mod-left-split .nav-buttons-container .clickable-icon svg,
+.workspace-split.mod-right-split .nav-buttons-container .clickable-icon svg,
+.workspace-split.mod-left-split .view-actions .clickable-icon svg,
+.workspace-split.mod-right-split .view-actions .clickable-icon svg {
+  width: 16px !important;
+  height: 16px !important;
+  stroke-width: 1.5px !important;
+}
+
+/* D. 强制拉平左右侧边栏内容区域顶部对齐 (Force pixel-perfect alignment) */
+.workspace-split.mod-left-split .view-content,
+.workspace-split.mod-right-split .view-content {
+  padding-top: 10px !important; 
+}
+
+.workspace-split.mod-left-split .view-content > :first-child,
+.workspace-split.mod-right-split .view-content > :first-child {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* ==========================================================
+   2. 彻底移除问号帮助图标 (Nuclear Hide Help Icon)
+   ========================================================== */
+/* svg[class*="help"] 已涵盖 lucide-help-circle，无需单列；display:none 已移出布局，
+   width/height/visibility 等冗余属性一并去掉 */
+svg[class*="help" i] { display: none !important; }
+
+.workspace [aria-label*="Help" i],
+.workspace [aria-label*="帮助" i],
+.workspace [aria-label*="Support" i] {
+  display: none !important;
+}
+
+.workspace-drawer-settings > *:nth-last-child(2) { display: none !important; }
+
+.workspace:has(svg.lucide-help-circle),
+.workspace-split.mod-left-split .clickable-icon:has(svg.lucide-help-circle),
+.workspace-split.mod-left-split .side-dock-ribbon-action:has(svg.lucide-help-circle) { display: none !important; }
+
+/* ==========================================================
+   3. 替换设置齿轮为 Obsidian 官方 logo 几何线稿
+   ========================================================== */
+svg.lucide-settings { display: none !important; }
+.workspace [aria-label*="Settings" i] svg,
+.workspace [aria-label*="设置" i] svg,
+.workspace-drawer-settings > *:last-child svg { display: none !important; }
+
+/* 按钮本体 → macOS App 图标式陶土圆角方块底座（宝石内嵌其中） */
+.workspace [aria-label*="Settings" i],
+.workspace [aria-label*="设置" i],
+.workspace-drawer-settings > *:last-child,
+.workspace-split.mod-left-split .clickable-icon:has(svg.lucide-settings),
+.workspace-split.mod-left-split .side-dock-ribbon-action:has(svg.lucide-settings) {
+  background-color: #E08A6E !important;   /* 比 Clay(#D97757) 略浅一档，更柔和 */
+  border-radius: var(--radius-m) !important;
+  width: 26px !important; height: 26px !important;
+  min-width: 26px !important; min-height: 26px !important;
+  padding: 0 !important;
+  display: flex !important; align-items: center; justify-content: center;
+  transition: background-color 0.2s ease !important;
+}
+
+/* 注入官方几何线稿（mask 造型统一走 --obsidian-gem-icon 变量），象牙白嵌在陶土方块内 */
+.workspace [aria-label*="Settings" i]::before,
+.workspace [aria-label*="设置" i]::before,
+.workspace-drawer-settings > *:last-child::before,
+.workspace-split.mod-left-split .clickable-icon:has(svg.lucide-settings)::before,
+.workspace-split.mod-left-split .side-dock-ribbon-action:has(svg.lucide-settings)::before {
+  content: ""; display: block; width: 14px; height: 14px;
+  background-color: var(--text-on-accent); background-position: center;
+  -webkit-mask-image: var(--obsidian-gem-icon); mask-image: var(--obsidian-gem-icon);
+  -webkit-mask-size: contain; mask-size: contain;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: center; mask-position: center;
+}
+
+/* 悬停加深底座（陶土 → 深陶土），宝石保持象牙白 */
+.workspace [aria-label*="Settings" i]:hover,
+.workspace [aria-label*="设置" i]:hover,
+.workspace-drawer-settings > *:last-child:hover,
+.workspace-split.mod-left-split .clickable-icon:has(svg.lucide-settings):hover,
+.workspace-split.mod-left-split .side-dock-ribbon-action:has(svg.lucide-settings):hover {
+  background-color: var(--interactive-accent) !important;   /* 悬停回到标准 Clay，轻微加深 */
+}
+
+/* ==========================================================
+   4. 库切换器极简排版 (Minimalist Vault Switcher)
+   真实类名（已对照 Obsidian app.css 核实）：
+   · .workspace-sidedock-vault-profile = 底栏，原生带 border-top 分隔线 + align-items:center
+   · .workspace-drawer-vault-switcher  = 左侧 vault 名胶囊（flex-grow:1）
+   · .workspace-drawer-vault-actions   = 右侧动作区（设置宝石图标所在）
+   ========================================================== */
+/* 底栏布局：去掉原生顶部分隔线；图标挪到左下角、vault 名居其右（左对齐）；
+   左侧留内边距让图标不贴窗口边框（避免图标圆角与窗口圆角半径差被放大） */
+.workspace-split.mod-left-split .workspace-sidedock-vault-profile {
+  border-top: none !important;
+  align-items: center;            /* 图标与 vault 名同一垂直中线 */
+  justify-content: flex-start !important;
+  gap: 10px !important;           /* 图标与 vault 名之间的呼吸间距 */
+  padding-left: 14px !important;  /* 图标离窗口左边框的内缩 */
+}
+
+/* 设置图标动作区移到最左 */
+.workspace-split.mod-left-split .workspace-drawer-vault-actions {
+  order: -1;
+}
+
+/* vault 名胶囊：紧贴文字（不再撑满整行），左对齐，精致内边距 + 圆角。
+   不强加 cursor:pointer，与其他导航项一致用默认光标 */
+.workspace-split.mod-left-split .workspace-drawer-vault-switcher {
+  flex-grow: 0 !important;
+  padding: 6px 12px !important;
+  border-radius: var(--radius-m) !important;
+  transition: background-color 0.15s ease !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em;
+}
+
+.workspace-split.mod-left-split .workspace-drawer-vault-switcher:hover {
+  background-color: var(--background-modifier-hover) !important;
+}
+
+/* 隐藏 vault 名旁的上下箭头，保持极简 */
+.workspace-split.mod-left-split svg.lucide-chevrons-up-down,
+.workspace-split.mod-left-split .workspace-drawer-vault-switcher-icon {
+  display: none !important;
+}
 
 /* ════════════════════════════════════════════════════════════
    PRINT / PDF 导出
