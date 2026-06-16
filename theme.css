@@ -49,6 +49,10 @@ body {
   --h5-size: 1.0em;
   --h6-size: 0.92em;
 
+  /* ── 间距排版 (Spacing) ── */
+  --list-spacing: 0.6em;  /* 增大列表项/待办项之间的间距，使其明显大于单项内的换行行距 */
+  --p-spacing: 1.2rem;    /* 段落间距 */
+
   /* ── Callout 颜色（典雅书卷色板，模式无关） ── */
   --callout-color-info:     #6A9BCC;   /* Sky */
   --callout-color-warning:  #D4A27F;   /* Kraft */
@@ -425,8 +429,17 @@ body.theme-dark {
   font-size: 1.0625em; /* 17px (精细化社论字号，16px * 1.0625 = 17px) */
 }
 
+/* 区分段落间距与换行间距 */
 .markdown-rendered p {
-  margin-bottom: 1.1em;
+  margin-bottom: var(--p-spacing, 1.2em);
+}
+
+/* 区分不同列表项之间的间距 (大于行高的 1.65)，避免长列表项混在一起 */
+.markdown-rendered li {
+  margin-bottom: var(--list-spacing, 0.6em);
+}
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-list-line {
+  padding-bottom: var(--list-spacing, 0.6em);
 }
 
 /* 内容区粗体/斜体 — 用 .markdown-rendered 约束，不影响 UI */
