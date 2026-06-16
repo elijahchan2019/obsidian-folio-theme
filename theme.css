@@ -1964,8 +1964,10 @@ select {
   display: flex;
   flex-direction: column;
   position: relative;
+  z-index: 10;
   border: none !important;
   background-color: transparent !important;
+  flex-shrink: 0 !important; /* CRITICAL: Prevent shrinking/clipping when the file tree is completely full */
 }
 
 .workspace-split.mod-left-split .nav-header::before,
@@ -1998,24 +2000,22 @@ select {
   justify-content: center;
   gap: 8px;
   overflow: hidden;
-  height: 0;
+  max-height: 0;
   opacity: 0;
-  margin-top: 0;
-  interpolate-size: allow-keywords; 
-  transition: height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.2s ease, margin-top 0.3s ease !important;
+  margin: 0 !important;
+  transition: max-height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.2s ease, margin 0.3s ease !important;
   pointer-events: none;
-  background-color: transparent !important;
+  background-color: transparent !important; /* Fix the weird shadow patch on the right side */
   box-shadow: none !important;
   padding: 0 12px;
 }
 
 .workspace-split.mod-left-split .nav-header:hover .nav-buttons-container,
 .workspace-split.mod-right-split .nav-header:hover .nav-buttons-container {
-  height: 36px; 
-  height: fit-content; 
+  max-height: 40px; 
   opacity: 1;
-  margin-top: 6px;
-  margin-bottom: 6px;
+  margin-top: 6px !important;
+  margin-bottom: 6px !important;
   pointer-events: auto;
 }
 
@@ -2180,6 +2180,8 @@ svg.lucide-settings { display: none !important; }
   justify-content: flex-start !important;
   gap: 10px !important;           /* 图标与 vault 名之间的呼吸间距 */
   padding-left: 14px !important;  /* 图标离窗口左边框的内缩 */
+  padding-top: 16px !important;   /* 增加上方与文档树的呼吸感空间 */
+  padding-bottom: 16px !important; /* 同步增加底部留白，保持视觉平衡 */
 }
 
 /* 设置图标动作区移到最左 */
