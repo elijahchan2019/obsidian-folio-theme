@@ -1,5 +1,5 @@
 /* ============================================================
-   Folio — Obsidian Theme  v1.0.9
+   Folio — Obsidian Theme  v1.0.9-dev (Folio-dev 验收版)
    字体: Inter · Lora · Instrument Sans · JetBrains Mono
    色彩: Ivory #FAF9F5 · Slate #141413 · Clay #D97757
    ============================================================*/
@@ -344,7 +344,7 @@ body.theme-dark {
   font-weight: 600;
   line-height: 1.15;  letter-spacing: -0.02em;
   color: var(--h2-color);
-  margin-top: 2.5em;  margin-bottom: 0.5em;
+  margin-top: 2.5em;  margin-bottom: 0.75em;
 }
 
 .markdown-rendered h3 {
@@ -395,10 +395,13 @@ body.theme-dark {
   font-weight: 600; letter-spacing: -0.02em;
 }
 .HyperMD-header-3,
+.cm-header-3 {
+  font-family: var(--font-heading-theme) !important;
+  font-weight: 600;
+}
 .HyperMD-header-4,
-.HyperMD-header-5,
-.cm-header-3,
 .cm-header-4,
+.HyperMD-header-5,
 .cm-header-5 {
   font-family: var(--font-heading-theme) !important;
   font-weight: 600;
@@ -416,12 +419,12 @@ body.theme-dark {
 .markdown-rendered li,
 .markdown-rendered dd {
   font-family: var(--font-text-theme);
-  line-height: 1.55;  /* 精确黄金行高：26.35px / 17px = 1.55 */
+  line-height: 1.65;
   font-size: 1.0625em; /* 17px (精细化社论字号，16px * 1.0625 = 17px) */
 }
 
 .markdown-rendered p {
-  margin-bottom: 0.85em;
+  margin-bottom: 1.1em;
 }
 
 /* 内容区粗体/斜体 — 用 .markdown-rendered 约束，不影响 UI */
@@ -674,33 +677,35 @@ hr,
 
 .tag,
 .cm-hashtag {
-  background: var(--tag-background);
-  color: var(--tag-color);
-  border-radius: var(--radius-pill);
+  background: rgba(217, 119, 87, 0.1); /* 10% 透明度的陶土色，极轻微的底色 */
+  color: #a47665; /* 较深的陶土文字色，保证可读性 */
+  border: none; /* 彻底去除边框 */
+  border-radius: var(--radius-pill); /* 恢复标准的胶囊圆角 */
   padding: 3px 10px;
   font-size: 0.8em;
   font-weight: 500;
   font-family: var(--font-interface-theme);
-  border: none;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   line-height: 1.4;
+  vertical-align: baseline;
 }
 
-/* 渲染模式下 tag 是 <a> 元素，.markdown-rendered a 的 color 会覆盖 .tag 的 color
-   导致文字色(Clay)与背景色(Clay)相同而不可见。此处用更高特异性强制修正。
-   同时覆盖表格、列表等嵌套上下文中的颜色继承。 */
+/* 渲染模式下强制文字颜色一致 */
 .markdown-rendered a.tag,
 .markdown-rendered td a.tag,
 .markdown-rendered th a.tag,
 .markdown-rendered li a.tag,
 .markdown-rendered blockquote a.tag,
 a.tag {
-  color: var(--tag-color) !important;
+  color: #a47665 !important;
 }
 
-.tag:hover { background: var(--tag-background-hover); }
+.tag:hover { 
+  background: rgba(217, 119, 87, 0.18); /* 悬停时底色稍微加深一点点 */
+  color: #8c6051 !important; /* 悬停时文字更深一点 */
+}
 
-/* Live Preview：# 和名字分两段，拼成完整药丸 */
+/* Live Preview：完美的胶囊拼接（因为没有边框，所以拼接毫无破绽） */
 .cm-hashtag.cm-hashtag-begin {
   border-radius: var(--radius-pill) 0 0 var(--radius-pill);
   padding-left: 10px; padding-right: 1px;
@@ -760,6 +765,28 @@ a.tag {
   content: '';
   position: absolute;
   inset: -6px;
+}
+
+/* ── 已完成任务褪色（整行透明度降低，不依赖删除线） ── */
+/* 覆盖阅读模式和实时预览模式 */
+.markdown-rendered .task-list-item.is-checked,
+.markdown-rendered li[data-task="x"],
+.markdown-rendered li[data-task="X"],
+.markdown-source-view.mod-cm6 .HyperMD-task-line[data-task="x"],
+.markdown-source-view.mod-cm6 .HyperMD-task-line[data-task="X"] {
+  opacity: 0.45 !important;
+  text-decoration: none !important;
+  color: var(--text-normal) !important;
+}
+
+/* 取消内部任何可能附带的删除线 */
+.markdown-rendered li[data-task="x"] s,
+.markdown-rendered li[data-task="X"] s,
+.markdown-rendered li[data-task="x"] del,
+.markdown-rendered li[data-task="X"] del,
+.markdown-source-view.mod-cm6 .HyperMD-task-line[data-task="x"] .cm-strikethrough,
+.markdown-source-view.mod-cm6 .HyperMD-task-line[data-task="X"] .cm-strikethrough {
+  text-decoration: none !important;
 }
 
 
