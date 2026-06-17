@@ -12,17 +12,16 @@ If you want Obsidian to feel less like a generic app screen and more like a calm
 
 - Warm light and dark modes built from the same ivory, slate, charcoal, and clay palette
 - Editorial typography for reading, writing, research notes, and long-form thinking
-- CJK-aware font stacks for mixed English and Chinese vaults
+- Refined paragraph and list breathing space for an editorial reading rhythm
+- Proprietary and CJK-aware font stacks mapped for seamless cross-platform rendering
 - Multi-color callouts for `info`, `warning`, `error`, `danger`, `success`, `tip`, `question`, `quote`, `abstract`, `summary`, and `example`
 - Styled headings, tables, blockquotes, links, tags, checkboxes, embeds, code blocks, properties, Canvas nodes, and file navigation
-- Carefully tuned command palette, search, tabs, menus, modals, sliders, settings, and mobile surfaces
+- Smooth sidebar hover expansion and optimized layout transitions for a distraction-free environment
 - Accessible focus states, reduced-motion handling, high-contrast support, and print-friendly output
 
-## Preview
+## Feature Showcase
 
-![Folio table styling](table-showcase.png)
-
-![Folio blockquote styling](blockquote-showcase.png)
+![Folio feature overview](feature-artboard.png)
 
 ## Design
 
