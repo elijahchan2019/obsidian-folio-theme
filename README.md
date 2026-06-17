@@ -1,25 +1,27 @@
 # Folio
 
-[中文介绍](https://github.com/elijahchan2019/obsidian-folio-theme/blob/main/README.zh-CN.md)
-
 ![Folio preview](screenshot.png)
 
-Folio is a warm editorial theme for Obsidian. It gives long notes a manuscript-like reading surface, with ivory backgrounds, clay accents, refined typography, and quiet interface polish for writing, research, and daily knowledge work.
+> **A warm editorial theme for Obsidian.** Ivory surfaces, clay accents, and spacious typography that turn long notes into a manuscript-like reading surface — for writing, research, and daily knowledge work.
 
-If you want Obsidian to feel less like a generic app screen and more like a calm writing desk, Folio is built for that.
+[中文介绍](https://github.com/elijahchan2019/obsidian-folio-theme/blob/main/README.zh-CN.md) · Light &amp; Dark · Desktop &amp; Mobile · No plugin required
 
-## Highlights
+Folio is built for one thing: making Obsidian feel less like a generic app screen and more like a calm writing desk. Every surface, accent, and line of spacing is tuned for reading and thinking — not for chrome.
 
-- Warm light and dark modes built from the same ivory, slate, charcoal, and clay palette
-- Editorial typography for reading, writing, research notes, and long-form thinking
-- Refined paragraph and list breathing space for an editorial reading rhythm
-- Proprietary and CJK-aware font stacks mapped for seamless cross-platform rendering
-- Multi-color callouts for `info`, `warning`, `error`, `danger`, `success`, `tip`, `question`, `quote`, `abstract`, `summary`, and `example`
-- Styled headings, tables, blockquotes, links, tags, checkboxes, embeds, code blocks, properties, Canvas nodes, and file navigation
-- Smooth sidebar hover expansion and optimized layout transitions for a distraction-free environment
-- Accessible focus states, reduced-motion handling, high-contrast support, and print-friendly output
+## Why Folio
+
+- **Editorial by default** — a Lora-based serif type scale tuned for reading, writing, research notes, and long-form thinking.
+- **One palette, two moods** — warm light and quiet dark modes built from the same ivory, slate, charcoal, and clay system.
+- **A restrained, intentional accent** — clay carries links, selection, focus, active states, and task checks, so the page stays calm but never flat.
+- **Multi-color callouts** — distinct accents for `info`, `warning`, `error`, `danger`, `success`, `tip`, `question`, `quote`, `abstract`, `summary`, and `example`.
+- **Considered details everywhere** — headings, tables, blockquotes, links, tags, checkboxes, embeds, code blocks, properties, Canvas nodes, and file navigation are all styled to match.
+- **CJK-aware typography** — font stacks mapped for seamless mixed English and Chinese rendering across platforms.
+- **Quiet, distraction-free motion** — smooth sidebar hover expansion and optimized layout transitions.
+- **Accessible and print-ready** — visible focus states, reduced-motion handling, high-contrast support, and clean PDF output.
 
 ## Feature Showcase
+
+A single glance at what Folio styles — editorial typography, multi-color callouts, spring-loaded task checks, warm code syntax, editorial tables and blockquotes, light &amp; dark, and quiet metadata.
 
 ![Folio feature overview](feature-artboard.png)
 
