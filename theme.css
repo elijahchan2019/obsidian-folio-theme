@@ -2128,7 +2128,8 @@ svg[class*="help" i] { display: none !important; }
 
 .workspace-drawer-settings > *:nth-last-child(2) { display: none !important; }
 
-.workspace:has(svg.lucide-help-circle),
+/* 仅隐藏帮助按钮容器。切勿把选择器写成整个工作区级的 has 匹配——
+   help 图标一出现就会让主内容区 display none 全白屏(canvas 等视图会触发) */
 .workspace-split.mod-left-split .clickable-icon:has(svg.lucide-help-circle),
 .workspace-split.mod-left-split .side-dock-ribbon-action:has(svg.lucide-help-circle) { display: none !important; }
 
