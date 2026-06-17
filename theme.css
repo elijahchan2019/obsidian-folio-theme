@@ -2136,17 +2136,20 @@ svg[class*="help" i] { display: none !important; }
 /* ==========================================================
    3. 替换设置齿轮为 Obsidian 官方 logo 几何线稿
    ========================================================== */
-svg.lucide-settings { display: none !important; }
-.workspace [aria-label*="Settings" i] svg,
-.workspace [aria-label*="设置" i] svg,
+/* 仅在底栏 vault profile / 左侧 ribbon 内隐藏原生齿轮——
+   搜索面板里的"搜索设置"齿轮保留原生图标，不再被宝石征用 */
+.workspace-sidedock-vault-profile svg.lucide-settings,
+.workspace-ribbon .side-dock-ribbon-action svg.lucide-settings,
 .workspace-drawer-settings > *:last-child svg { display: none !important; }
 
-/* 按钮本体 → macOS App 图标式陶土圆角方块底座（宝石内嵌其中） */
-.workspace [aria-label*="Settings" i],
-.workspace [aria-label*="设置" i],
-.workspace-drawer-settings > *:last-child,
-.workspace-split.mod-left-split .clickable-icon:has(svg.lucide-settings),
-.workspace-split.mod-left-split .side-dock-ribbon-action:has(svg.lucide-settings) {
+/* 按钮本体 → macOS App 图标式陶土圆角方块底座（宝石内嵌其中）。
+   仅限底栏 vault profile / 左侧 ribbon 的真·设置按钮，
+   绝不波及搜索面板的"搜索设置"齿轮 */
+.workspace-sidedock-vault-profile [aria-label*="Settings" i],
+.workspace-sidedock-vault-profile [aria-label*="设置" i],
+.workspace-sidedock-vault-profile .clickable-icon:has(svg.lucide-settings),
+.workspace-ribbon .side-dock-ribbon-action:has(svg.lucide-settings),
+.workspace-drawer-settings > *:last-child {
   background-color: #E08A6E !important;   /* 比 Clay(#D97757) 略浅一档，更柔和 */
   border-radius: var(--radius-m) !important;
   width: 26px !important; height: 26px !important;
@@ -2157,11 +2160,11 @@ svg.lucide-settings { display: none !important; }
 }
 
 /* 注入官方几何线稿（mask 造型统一走 --obsidian-gem-icon 变量），象牙白嵌在陶土方块内 */
-.workspace [aria-label*="Settings" i]::before,
-.workspace [aria-label*="设置" i]::before,
-.workspace-drawer-settings > *:last-child::before,
-.workspace-split.mod-left-split .clickable-icon:has(svg.lucide-settings)::before,
-.workspace-split.mod-left-split .side-dock-ribbon-action:has(svg.lucide-settings)::before {
+.workspace-sidedock-vault-profile [aria-label*="Settings" i]::before,
+.workspace-sidedock-vault-profile [aria-label*="设置" i]::before,
+.workspace-sidedock-vault-profile .clickable-icon:has(svg.lucide-settings)::before,
+.workspace-ribbon .side-dock-ribbon-action:has(svg.lucide-settings)::before,
+.workspace-drawer-settings > *:last-child::before {
   content: ""; display: block; width: 14px; height: 14px;
   background-color: var(--text-on-accent); background-position: center;
   -webkit-mask-image: var(--obsidian-gem-icon); mask-image: var(--obsidian-gem-icon);
@@ -2171,12 +2174,34 @@ svg.lucide-settings { display: none !important; }
 }
 
 /* 悬停加深底座（陶土 → 深陶土），宝石保持象牙白 */
-.workspace [aria-label*="Settings" i]:hover,
-.workspace [aria-label*="设置" i]:hover,
-.workspace-drawer-settings > *:last-child:hover,
-.workspace-split.mod-left-split .clickable-icon:has(svg.lucide-settings):hover,
-.workspace-split.mod-left-split .side-dock-ribbon-action:has(svg.lucide-settings):hover {
+.workspace-sidedock-vault-profile [aria-label*="Settings" i]:hover,
+.workspace-sidedock-vault-profile [aria-label*="设置" i]:hover,
+.workspace-sidedock-vault-profile .clickable-icon:has(svg.lucide-settings):hover,
+.workspace-ribbon .side-dock-ribbon-action:has(svg.lucide-settings):hover,
+.workspace-drawer-settings > *:last-child:hover {
   background-color: var(--interactive-accent) !important;   /* 悬停回到标准 Clay，轻微加深 */
+}
+
+/* ==========================================================
+   3b. 搜索面板"搜索设置"齿轮 —— 轻量化，不复用底栏宝石
+   宝石是底栏设置按钮的点睛之笔，仅此一处；搜索这里用克制的
+   原生齿轮：默认淡墨色，悬停才浮现陶土，无填充方块。
+   同时给 search-row 留出间距，聚焦边框不再与齿轮重叠。
+   ========================================================== */
+.workspace-leaf-content[data-type="search"] .search-row {
+  gap: 8px;   /* 输入框聚焦边框与右侧齿轮之间的呼吸距离 */
+}
+.workspace-leaf-content[data-type="search"] .search-input-container {
+  margin-right: 2px;   /* 框略微收窄，进一步避免边框贴住图标 */
+}
+.workspace-leaf-content[data-type="search"] .search-row > .clickable-icon {
+  color: var(--text-faint);
+  background-color: transparent !important;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+.workspace-leaf-content[data-type="search"] .search-row > .clickable-icon:hover {
+  color: var(--text-accent);
+  background-color: var(--background-modifier-hover) !important;
 }
 
 /* ==========================================================
