@@ -330,7 +330,7 @@ body.theme-dark {
 .markdown-rendered h4,
 .markdown-rendered h5,
 .inline-title {
-  font-family: var(--font-heading-theme) !important;
+  font-family: var(--font-text-theme) !important;
 }
 
 .markdown-rendered h1 {
@@ -392,24 +392,24 @@ body.theme-dark {
 
 .HyperMD-header-1,
 .cm-header-1 {
-  font-family: var(--font-heading-theme) !important;
+  font-family: var(--font-text-theme) !important;
   font-weight: 700; letter-spacing: -0.025em;
 }
 .HyperMD-header-2,
 .cm-header-2 {
-  font-family: var(--font-heading-theme) !important;
+  font-family: var(--font-text-theme) !important;
   font-weight: 600; letter-spacing: -0.02em;
 }
 .HyperMD-header-3,
 .cm-header-3 {
-  font-family: var(--font-heading-theme) !important;
+  font-family: var(--font-text-theme) !important;
   font-weight: 600;
 }
 .HyperMD-header-4,
 .cm-header-4,
 .HyperMD-header-5,
 .cm-header-5 {
-  font-family: var(--font-heading-theme) !important;
+  font-family: var(--font-text-theme) !important;
   font-weight: 600;
 }
 .HyperMD-header-6,
