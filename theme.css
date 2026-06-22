@@ -1001,7 +1001,9 @@ a.tag {
 /* ── 滚动条 ── */
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--scrollbar-bg); }
+/* 滑槽透明：隐藏凹槽，只保留滑块（仿浏览器悬浮滚动条观感） */
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-corner { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb-bg); border-radius: var(--radius-s); }
 ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-active-thumb-bg); }
 
