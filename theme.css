@@ -95,6 +95,7 @@ body.theme-light {
   --background-primary-alt:         #F0EEE6;   /* Ivory Medium — tab 栏/状态栏 */
   --background-secondary:           #EBE9E0;   /* Ivory Dark — 侧边栏 */
   --background-secondary-alt:       #E8E6DC;   /* Ivory Darker — inline code */
+  --folio-floating-surface:         #FFFDF7;   /* 浮层卡片：暖白，逐通道亮于页面，靠阴影抬升 */
   --background-modifier-border:     rgba(20, 20, 19, 0.08);
   --background-modifier-form-field: #FFFFFF;
   --background-modifier-form-field-highlighted: #FFF8F0;
@@ -215,6 +216,7 @@ body.theme-dark {
   --background-primary-alt:         #1E1E1C;
   --background-secondary:           #141413;
   --background-secondary-alt:       #111110;
+  --folio-floating-surface:         #242422;   /* 暗色浮层：比页面更亮一档，制造抬升 */
   --background-modifier-border:     rgba(250, 249, 245, 0.08);
   --background-modifier-form-field: #242422;
   --background-modifier-form-field-highlighted: #2A2720;
@@ -991,8 +993,11 @@ a.tag {
 /* ── 状态栏 ── */
 
 .status-bar {
-  background: var(--background-primary-alt);
+  /* 右下角悬浮 chip：亮白卡面 + 发丝边 + 柔影，告别灰黄色板 */
+  background: var(--folio-floating-surface);
   border-top: 1px solid var(--background-modifier-border);
+  border-left: 1px solid var(--background-modifier-border);
+  box-shadow: -3px -3px 12px rgba(20, 20, 19, 0.05);
   color: var(--text-faint);
   font-size: var(--font-ui-smaller, 12px);   /* Obsidian 官方变量，fallback 12px */
   font-family: var(--font-interface-theme);
@@ -1131,14 +1136,25 @@ textarea:focus {
 
 /* ── 下拉菜单 / 右键菜单 ── */
 
+/* 浮层统一观感：亮白卡片 + 发丝边 + 柔影抬升（取代灰黄填充） */
 .dropdown-menu,
-.context-menu {
-  background: var(--background-primary);
+.context-menu,
+.suggestion-container {
+  background: var(--folio-floating-surface);
   border: 1px solid var(--background-modifier-border);
   border-radius: var(--radius-l);
-  box-shadow: var(--shadow-medium);
+  box-shadow: var(--shadow-large);
   font-family: var(--font-interface-theme);
   padding: 6px;
+}
+/* 搜索浮层 .mod-search-suggestion 自带 0,2,0 特异性的 --background-secondary 底色，
+   必须同特异性覆盖；内部 .suggestion 同样要清掉灰底，交给 hover/选中态着色 */
+.suggestion-container.mod-search-suggestion {
+  background-color: var(--folio-floating-surface);
+  border-color: var(--background-modifier-border);
+}
+.suggestion-container.mod-search-suggestion .suggestion {
+  background-color: transparent;
 }
 
 .menu-item {
