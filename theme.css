@@ -990,6 +990,15 @@ a.tag {
   font-weight: 500;
 }
 
+/* 文件树顶级 chapter（不在任何 .nav-folder-children 内）用 weight 700 立起来
+   用 :not() 检测，不依赖是否有 .tree-item wrapper。
+   之前的 > 直接子选择器漏了 .tree-item 中间层，所以一直没生效。
+   500/600 跟 400 在 CJK 字体上区分太小，多 fall back 到 400。 */
+.nav-folder-title:not(.nav-folder-children .nav-folder-title),
+.nav-file-title:not(.nav-folder-children .nav-file-title) {
+  font-weight: 600;
+}
+
 /* ── 状态栏 ── */
 
 .status-bar {
@@ -1210,33 +1219,18 @@ input[type='range']::-webkit-slider-thumb:hover {
 
 /* ── Callout ── */
 
-/* border-left 替代 inset box-shadow（视觉一致，paint 成本从 O(shadow) 降到 O(border)）
+/* 单 border-left + tinted bg 构成容器；去掉 1px 灰边以避免 3px 彩边
+   与 1px 灰边在 16px 圆角处出现"蘑菇头"接缝（CSS 内外角差 2–13px）。
    rgba() 替代 color-mix()（消除 paint-time 动态计算） */
 .callout {
+  border-left: 3px solid var(--callout-accent, var(--callout-color, var(--interactive-accent)));
   border-radius: var(--radius-l);
-  border: 1px solid var(--background-modifier-border);
   background: var(--background-primary-alt);
   padding: 10px 16px 12px 20px;
-  position: relative;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   gap: 14px;
-}
-.callout::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  bottom: -1px;
-  width: 3px;
-  background: var(--callout-accent, var(--callout-color, var(--interactive-accent)));
-  border-top-left-radius: var(--radius-l);
-  border-bottom-left-radius: var(--radius-l);
-  transition: filter var(--anim-fast);
-}
-.callout:hover::before {
-  filter: brightness(1.1);
 }
 .callout-title {
   font-family: var(--font-interface-theme);
