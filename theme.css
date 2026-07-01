@@ -1216,9 +1216,12 @@ input[type='range']::-webkit-slider-thumb:hover {
   border-radius: var(--radius-l);
   border: 1px solid var(--background-modifier-border);
   background: var(--background-primary-alt);
-  padding: 16px 20px 16px 24px;
+  padding: 10px 16px 12px 20px;
   position: relative;
-  transition: transform var(--anim-fast), box-shadow var(--anim-fast);
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 14px;
 }
 .callout::before {
   content: '';
@@ -1226,32 +1229,63 @@ input[type='range']::-webkit-slider-thumb:hover {
   top: -1px;
   left: -1px;
   bottom: -1px;
-  width: 4px;
+  width: 3px;
   background: var(--callout-accent, var(--callout-color, var(--interactive-accent)));
   border-top-left-radius: var(--radius-l);
   border-bottom-left-radius: var(--radius-l);
+  transition: filter var(--anim-fast);
 }
-.callout:hover {
-  transform: translate3d(-1px, -1px, 0);
-  box-shadow: 3px 3px 0px var(--background-modifier-border);
+.callout:hover::before {
+  filter: brightness(1.1);
 }
 .callout-title {
   font-family: var(--font-interface-theme);
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 0.9em;
+  line-height: 1.55;
   color: var(--text-normal);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+.callout-content {
+  font-size: 0.875em;
+  line-height: 1.55;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+.callout-content p {
+  margin: 0;
+}
+.callout-content > * + * {
+  margin-top: 0.5em;
+}
+.callout-icon {
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+}
+.callout mark {
+  background: var(--callout-mark-bg);
+  color: inherit;
+  border-radius: 2px;
 }
 
-.callout[data-callout='info']     { --callout-accent: var(--callout-color-info);    background: rgba(106, 155, 204, 0.06); }
-.callout[data-callout='warning']  { --callout-accent: var(--callout-color-warning); background: rgba(212, 162, 127, 0.06); }
+.callout[data-callout='info']     { --callout-accent: var(--callout-color-info);    background: rgba(106, 155, 204, 0.06); --callout-mark-bg: rgba(106, 155, 204, 0.30); }
+.callout[data-callout='warning']  { --callout-accent: var(--callout-color-warning); background: rgba(212, 162, 127, 0.06); --callout-mark-bg: rgba(212, 162, 127, 0.32); }
 .callout[data-callout='error'],
-.callout[data-callout='danger']   { --callout-accent: var(--callout-color-error);   background: rgba(196, 102, 134, 0.06); }
+.callout[data-callout='danger']   { --callout-accent: var(--callout-color-error);   background: rgba(196, 102, 134, 0.06); --callout-mark-bg: rgba(196, 102, 134, 0.30); }
 .callout[data-callout='success'],
-.callout[data-callout='tip']      { --callout-accent: var(--callout-color-success); background: rgba(120, 140, 93, 0.06); }
-.callout[data-callout='question'] { --callout-accent: var(--callout-color-clay);    background: rgba(217, 119, 87, 0.06); }
-.callout[data-callout='quote']    { --callout-accent: var(--callout-color-slate);   background: rgba(94, 93, 89, 0.04); }
+.callout[data-callout='tip']      { --callout-accent: var(--callout-color-success); background: rgba(120, 140, 93, 0.06);  --callout-mark-bg: rgba(120, 140, 93, 0.30); }
+.callout[data-callout='question'] { --callout-accent: var(--callout-color-clay);    background: rgba(217, 119, 87, 0.06);  --callout-mark-bg: rgba(217, 119, 87, 0.28); }
+.callout[data-callout='quote']    { --callout-accent: var(--callout-color-slate);   background: rgba(94, 93, 89, 0.04);    --callout-mark-bg: rgba(94, 93, 89, 0.18); }
 .callout[data-callout='abstract'],
-.callout[data-callout='summary']  { --callout-accent: var(--callout-color-heather); background: rgba(130, 125, 189, 0.06); }
-.callout[data-callout='example']  { --callout-accent: var(--callout-color-clay); }
+.callout[data-callout='summary']  { --callout-accent: var(--callout-color-heather); background: rgba(130, 125, 189, 0.06); --callout-mark-bg: rgba(130, 125, 189, 0.30); }
+.callout[data-callout='example']  { --callout-accent: var(--callout-color-clay);    --callout-mark-bg: rgba(217, 119, 87, 0.28); }
 
 /* 染色正文仅限亮色模式（暗色下深色文字不可读，回退 --text-normal） */
 body.theme-light .callout[data-callout='info']    { color: #1a365d; }
