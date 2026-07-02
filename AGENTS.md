@@ -126,35 +126,111 @@ Folio 的 `input:focus` = 0,1,1 压不过它，所以 `border-color` 改不动�
 
 ## 提交前
 
-- `manifest.json` 的 `version` 是否需要 bump（配合 `versions.json`）。
+- `manifest.json` 的 `version` 是否需要 bump。
 - light + dark 都验过；改了打印区就验 PDF。
 - `snippets/` 是否需要同步。
 - 没有改到无关区段。
+
+> ⚠️ **别被 `versions.json` 误导。** 仓库里有个 `versions.json`，但**那是插件（plugin）概念，主题（theme）根本不读它**。它既不影响安装，也不影响市场可见性——留着无害，但**不要**把「同步 versions.json」当成发版必做项，更不要以为补它能修市场搜不到（这是上个 agent 的错误判断，已澄清见下）。
+
+> ⚠️ **市场可见性 = 在官方索引里 + release 合规，缺一不可（且会被踢出）。**
+> 能否在 app 内市场搜到，取决于主题在不在官方 `obsidianmd/obsidian-releases` 的
+> `community-css-themes.json`（那份清单就是"索引"）。**但索引不是一劳永逸的**——
+> 推了不合规的 release 会被官方**踢出索引**。Folio 就是这么掉的：一次 gh 版本推送后
+> 被 de-index，清单里现在查无此项（Opendian 目前仍在）。所以 release 合规不是"跟市场无关"，
+> 恰恰是**保住索引的必要条件**。
+>
+> **恢复 / 重新上架流程**：
+> ① 先把仓库 + release 弄合规（tag == manifest `version` 且**无 v**、挂全资产、Latest 正确、
+>   manifest 必填字段齐、theme.css 不引外部网络资源/远程字体）→
+> ② 走 Obsidian 官方主题审核流程（在主题管理页拉取 gh 的**最新版本**提审）→
+> ③ 通过后，官方索引机器人**每 1–2 小时**扫一遍，自动重新索引 → app 内又能搜到。
+>
+> **诊断顺序**：先 `grep -i folio` 那份清单看在不在索引里；再查 latest release 的 tag
+> 是否 == manifest version（无 v）+ 资产是否齐。两头都要看，别只盯自己仓库改而不看索引状态。
 
 ## 发布前（dev → main 合并时）
 
 **这个清单是"上次发布踩坑"沉淀出来的，**严格按顺序执行**。**
 
-1. **dev 上完成所有 dev commit + 版本 bump**（如 `v1.1.13: ...`）。**不要**在 main 上手动改 `theme.css`。
+1. **dev 上完成所有 dev commit + 版本 bump**（如 `v1.2.0: ...`）。**不要**在 main 上手动改 `theme.css`。
 2. **push dev 到 remote**：`git push origin dev`。
 3. **切到 Folio 目录（main）**，`git fetch origin`。
-4. **fast-forward merge**：`git merge --ff-only origin/dev`。**这一把会顺带把 dev 的 `manifest.json` 带过来——dev 分支的 `name` 字段是 `"Folio-dev"`（为了跟 main 主题在 Obsidian 里共存），但 main 必须发成 `"Folio"`。**
-5. **修 `manifest.json` 的 name**：`"Folio-dev"` → `"Folio"`。**这是发布的关键检查点，忘了就发成了"Folio-dev 主题"。**
-6. **amend 这次 commit**（不要新加 commit，保持版本 commit 干净）：
+4. **检查能否 fast-forward**：
+   ```bash
+   git merge-base --is-ancestor origin/main origin/dev && echo "ff" || echo "diverged"
+   ```
+   - **`ff` 输出** → 走第 5a 步（fast-forward + amend）
+   - **`diverged` 输出**（上次 v1.1.13 在 main 用 --amend 改 name 就会触发）→ 走第 5b 步（--no-ff + 解决 manifest 冲突）
+
+   **为什么会有 diverged**：上版本（v1.1.13）发版时 fast-forward 后用 `--amend` 改了 `ff05fcb` 的 manifest name（"Folio-dev" → "Folio"），这把 main 的 commit hash 改了，但 dev 上还有原版（"Folio-dev"），从此两边 manifest 路径分叉。如果以后发布前都先检查这一步，可以避免。
+
+5a. **fast-forward 路径**：
+   ```bash
+   git merge --ff-only origin/dev
+   ```
+   merge 会把 dev 的 manifest 带过来——`name: "Folio-dev"`，要改回：
+   ```bash
+   sed -i '' 's/"name": "Folio-dev"/"name": "Folio"/' manifest.json
+   git add manifest.json
+   git commit --amend --no-edit   # 把 name 改动 amend 进版本 commit，保持 main 上版本 commit 干净
+   ```
+
+5b. **--no-ff 路径**（diverged 时用）：merge 会报 manifest.json 冲突（main 想留 `name="Folio"`，dev 带来 `version="X.Y.Z"`）：
+   ```bash
+   git merge --no-ff origin/dev -m "Merge dev for vX.Y.Z release"
+   ```
+   冲突里取**name="Folio" + dev 的 version**（其他字段留 dev 的），整个文件重写：
+   ```json
+   {
+     "name": "Folio",
+     "version": "X.Y.Z",
+     "minAppVersion": "1.5.0",
+     "author": "elijahchan2019",
+     "authorUrl": "https://github.com/elijahchan2019"
+   }
+   ```
    ```bash
    git add manifest.json
-   git commit --amend --no-edit
+   git commit --no-edit
    ```
-7. **确认 manifest 内容**：
+   **不要 amend merge commit**——amend 会丢掉 dev 的 fix commit 和版本 bump commit（merge commit 的 parent 链路），整个发布会回退。
+
+6. **确认 manifest 内容**（两个路径都跑一次）：
    ```bash
    cat manifest.json   # name: "Folio", version: 新版号
    ```
-8. **打 tag + push**：
+
+7. **push main，然后一条命令建 release**（tag + 资产 + Latest + 说明一把到位）：
+
+   ⚠️ **三条铁律，每条都踩过坑：**
+   - **① tag 名 = manifest `version`，绝不带 `v` 前缀。** Obsidian 按 manifest 的
+     `version` 字符串找同名 release：manifest 是 `1.2.1` 就必须有 tag `1.2.1`。带 `v`
+     （`v1.2.1`）→ Obsidian 手动检测报「no GitHub release with that version has been
+     published yet」。历史：老版本本是无前缀（`1.0.2`…`1.1.12`，对），后被改成 `v`
+     前缀（`v1.1.13`/`v1.2.0`/`v1.2.1`）全破坏了。**别再加 v。**
+   - **② 必须挂全资产**：至少 `theme.css` + `manifest.json`（本仓库惯例连
+     README/截图一起挂）。历史上 v1.1.12 就是漏挂资产被迫 "Republish"。
+   - **③ 必须是 Latest**：`--latest` 显式指定。GitHub 默认按发布时间判定，乱序/补发
+     会把旧版标成 Latest（v1.2.0 就曾错标为 Latest）。
+
    ```bash
-   git tag -a vX.Y.Z -m "vX.Y.Z: <一句话 summary>"
    git push origin main
-   git push origin vX.Y.Z
+   # 一条命令：建 tag(无 v) + 挂资产 + 设 Latest + 写说明
+   gh release create X.Y.Z --target main --latest --title "X.Y.Z" \
+     --notes "……（累积改动，见第 8 步风格）" \
+     theme.css manifest.json README.md README.zh-CN.md screenshot.png feature-artboard.png
    ```
+
+8. **Release note 正文**：按"累积改动"列（参考上次 release note 风格，把上个版本之后
+   未发版的所有 dev commit 都包进来——minor bump 的标准做法）。
+
+9. **发完自检**（30 秒，省得又被打回来）：
+   ```bash
+   gh api repos/elijahchan2019/obsidian-folio-theme/releases/latest --jq '.tag_name'  # 应 == manifest version，无 v
+   gh release view X.Y.Z --json assets --jq '.assets[].name'                          # theme.css / manifest.json 在
+   ```
+   两条都对，再回 Obsidian 点一次「检查更新」确认不报错。
 
 **为什么 dev 的 name 是 "Folio-dev"**：两个主题同名会在 Obsidian 里冲突。Folio-dev 加载时会盖掉 Folio。保持 dev 叫 "Folio-dev"、main 叫 "Folio" 才能在同一 vault 同时存在并对照调试。
 
