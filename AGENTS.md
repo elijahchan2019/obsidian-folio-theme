@@ -127,10 +127,13 @@ Folio 的 `input:focus` = 0,1,1 压不过它，所以 `border-color` 改不动�
 ## 提交前
 
 - `manifest.json` 的 `version` 是否需要 bump。
-- `versions.json` 是否需要同步加新版本（**首次发版前要确认这文件存在**——v1.2.1 hotfix 就是因为仓库从来没有这文件导致主题市场搜不到，补上的）。
 - light + dark 都验过；改了打印区就验 PDF。
 - `snippets/` 是否需要同步。
 - 没有改到无关区段。
+
+> ⚠️ **别被 `versions.json` 误导。** 仓库里有个 `versions.json`，但**那是插件（plugin）概念，主题（theme）根本不读它**。它既不影响安装，也不影响市场可见性——留着无害，但**不要**把「同步 versions.json」当成发版必做项，更不要以为补它能修市场搜不到（这是上个 agent 的错误判断，已澄清见下）。
+
+> ⚠️ **市场「搜不到」≠ release / 版本问题。** 主题能否在 Obsidian 市场被搜到，只取决于它在不在官方仓库 `obsidianmd/obsidian-releases` 的 `community-css-themes.json` 清单里。改本地 tag / version / versions.json **都不可能**影响它。要上架/恢复只能向那个仓库提 PR 等官方合并。**排查市场问题前，先 grep 那个清单确认在不在，别在自己仓库里瞎改。**
 
 ## 发布前（dev → main 合并时）
 
@@ -184,22 +187,36 @@ Folio 的 `input:focus` = 0,1,1 压不过它，所以 `border-color` 改不动�
    cat manifest.json   # name: "Folio", version: 新版号
    ```
 
-7. **打 tag + push**：
+7. **push main，然后一条命令建 release**（tag + 资产 + Latest + 说明一把到位）：
 
-   ⚠️ **tag 名必须与 manifest 的 `version` 精确一致，绝不能带 `v` 前缀。**
-   Obsidian 的检测/更新按 manifest `version` 字符串去找同名 release：manifest 是
-   `1.2.1` 就必须有 tag `1.2.1`。带了 `v`（`v1.2.1`）会导致 Obsidian 手动检测报
-   「no GitHub release with that version has been published yet」。
-   历史坑：老版本本来是无前缀的（`1.0.2`…`1.1.12`，正确），后来有人改成 `v` 前缀
-   （`v1.1.13`/`v1.2.0`/`v1.2.1`）把匹配全破坏了。**别再加 v。**
+   ⚠️ **三条铁律，每条都踩过坑：**
+   - **① tag 名 = manifest `version`，绝不带 `v` 前缀。** Obsidian 按 manifest 的
+     `version` 字符串找同名 release：manifest 是 `1.2.1` 就必须有 tag `1.2.1`。带 `v`
+     （`v1.2.1`）→ Obsidian 手动检测报「no GitHub release with that version has been
+     published yet」。历史：老版本本是无前缀（`1.0.2`…`1.1.12`，对），后被改成 `v`
+     前缀（`v1.1.13`/`v1.2.0`/`v1.2.1`）全破坏了。**别再加 v。**
+   - **② 必须挂全资产**：至少 `theme.css` + `manifest.json`（本仓库惯例连
+     README/截图一起挂）。历史上 v1.1.12 就是漏挂资产被迫 "Republish"。
+   - **③ 必须是 Latest**：`--latest` 显式指定。GitHub 默认按发布时间判定，乱序/补发
+     会把旧版标成 Latest（v1.2.0 就曾错标为 Latest）。
 
    ```bash
-   git tag -a X.Y.Z -m "X.Y.Z: <一句话 summary>"   # 无 v 前缀！
    git push origin main
-   git push origin X.Y.Z
+   # 一条命令：建 tag(无 v) + 挂资产 + 设 Latest + 写说明
+   gh release create X.Y.Z --target main --latest --title "X.Y.Z" \
+     --notes "……（累积改动，见第 8 步风格）" \
+     theme.css manifest.json README.md README.zh-CN.md screenshot.png feature-artboard.png
    ```
 
-8. **写 GitHub Release note**：进 https://github.com/elijahchan2019/obsidian-folio-theme/releases/new → 选刚推的 tag（`X.Y.Z`，无 v）→ 标题 `X.Y.Z`，正文按"累积改动"列（参考上次 release note 风格，把上个版本之后未发版的所有 dev commit 都包进来——这是 minor bump 的标准做法）。**发布时确认这个 release 被标为 Latest**（GitHub 按发布时间判定，乱序补发会标错，必要时 `gh release edit X.Y.Z --latest` 手动纠正）。
+8. **Release note 正文**：按"累积改动"列（参考上次 release note 风格，把上个版本之后
+   未发版的所有 dev commit 都包进来——minor bump 的标准做法）。
+
+9. **发完自检**（30 秒，省得又被打回来）：
+   ```bash
+   gh api repos/elijahchan2019/obsidian-folio-theme/releases/latest --jq '.tag_name'  # 应 == manifest version，无 v
+   gh release view X.Y.Z --json assets --jq '.assets[].name'                          # theme.css / manifest.json 在
+   ```
+   两条都对，再回 Obsidian 点一次「检查更新」确认不报错。
 
 **为什么 dev 的 name 是 "Folio-dev"**：两个主题同名会在 Obsidian 里冲突。Folio-dev 加载时会盖掉 Folio。保持 dev 叫 "Folio-dev"、main 叫 "Folio" 才能在同一 vault 同时存在并对照调试。
 
