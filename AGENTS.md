@@ -126,7 +126,8 @@ Folio 的 `input:focus` = 0,1,1 压不过它，所以 `border-color` 改不动�
 
 ## 提交前
 
-- `manifest.json` 的 `version` 是否需要 bump（配合 `versions.json`）。
+- `manifest.json` 的 `version` 是否需要 bump。
+- `versions.json` 是否需要同步加新版本（**首次发版前要确认这文件存在**——v1.2.1 hotfix 就是因为仓库从来没有这文件导致主题市场搜不到，补上的）。
 - light + dark 都验过；改了打印区就验 PDF。
 - `snippets/` 是否需要同步。
 - 没有改到无关区段。
@@ -135,26 +136,70 @@ Folio 的 `input:focus` = 0,1,1 压不过它，所以 `border-color` 改不动�
 
 **这个清单是"上次发布踩坑"沉淀出来的，**严格按顺序执行**。**
 
-1. **dev 上完成所有 dev commit + 版本 bump**（如 `v1.1.13: ...`）。**不要**在 main 上手动改 `theme.css`。
+1. **dev 上完成所有 dev commit + 版本 bump**（如 `v1.2.0: ...`）。**不要**在 main 上手动改 `theme.css`。
 2. **push dev 到 remote**：`git push origin dev`。
 3. **切到 Folio 目录（main）**，`git fetch origin`。
-4. **fast-forward merge**：`git merge --ff-only origin/dev`。**这一把会顺带把 dev 的 `manifest.json` 带过来——dev 分支的 `name` 字段是 `"Folio-dev"`（为了跟 main 主题在 Obsidian 里共存），但 main 必须发成 `"Folio"`。**
-5. **修 `manifest.json` 的 name**：`"Folio-dev"` → `"Folio"`。**这是发布的关键检查点，忘了就发成了"Folio-dev 主题"。**
-6. **amend 这次 commit**（不要新加 commit，保持版本 commit 干净）：
+4. **检查能否 fast-forward**：
+   ```bash
+   git merge-base --is-ancestor origin/main origin/dev && echo "ff" || echo "diverged"
+   ```
+   - **`ff` 输出** → 走第 5a 步（fast-forward + amend）
+   - **`diverged` 输出**（上次 v1.1.13 在 main 用 --amend 改 name 就会触发）→ 走第 5b 步（--no-ff + 解决 manifest 冲突）
+
+   **为什么会有 diverged**：上版本（v1.1.13）发版时 fast-forward 后用 `--amend` 改了 `ff05fcb` 的 manifest name（"Folio-dev" → "Folio"），这把 main 的 commit hash 改了，但 dev 上还有原版（"Folio-dev"），从此两边 manifest 路径分叉。如果以后发布前都先检查这一步，可以避免。
+
+5a. **fast-forward 路径**：
+   ```bash
+   git merge --ff-only origin/dev
+   ```
+   merge 会把 dev 的 manifest 带过来——`name: "Folio-dev"`，要改回：
+   ```bash
+   sed -i '' 's/"name": "Folio-dev"/"name": "Folio"/' manifest.json
+   git add manifest.json
+   git commit --amend --no-edit   # 把 name 改动 amend 进版本 commit，保持 main 上版本 commit 干净
+   ```
+
+5b. **--no-ff 路径**（diverged 时用）：merge 会报 manifest.json 冲突（main 想留 `name="Folio"`，dev 带来 `version="X.Y.Z"`）：
+   ```bash
+   git merge --no-ff origin/dev -m "Merge dev for vX.Y.Z release"
+   ```
+   冲突里取**name="Folio" + dev 的 version**（其他字段留 dev 的），整个文件重写：
+   ```json
+   {
+     "name": "Folio",
+     "version": "X.Y.Z",
+     "minAppVersion": "1.5.0",
+     "author": "elijahchan2019",
+     "authorUrl": "https://github.com/elijahchan2019"
+   }
+   ```
    ```bash
    git add manifest.json
-   git commit --amend --no-edit
+   git commit --no-edit
    ```
-7. **确认 manifest 内容**：
+   **不要 amend merge commit**——amend 会丢掉 dev 的 fix commit 和版本 bump commit（merge commit 的 parent 链路），整个发布会回退。
+
+6. **确认 manifest 内容**（两个路径都跑一次）：
    ```bash
    cat manifest.json   # name: "Folio", version: 新版号
    ```
-8. **打 tag + push**：
+
+7. **打 tag + push**：
+
+   ⚠️ **tag 名必须与 manifest 的 `version` 精确一致，绝不能带 `v` 前缀。**
+   Obsidian 的检测/更新按 manifest `version` 字符串去找同名 release：manifest 是
+   `1.2.1` 就必须有 tag `1.2.1`。带了 `v`（`v1.2.1`）会导致 Obsidian 手动检测报
+   「no GitHub release with that version has been published yet」。
+   历史坑：老版本本来是无前缀的（`1.0.2`…`1.1.12`，正确），后来有人改成 `v` 前缀
+   （`v1.1.13`/`v1.2.0`/`v1.2.1`）把匹配全破坏了。**别再加 v。**
+
    ```bash
-   git tag -a vX.Y.Z -m "vX.Y.Z: <一句话 summary>"
+   git tag -a X.Y.Z -m "X.Y.Z: <一句话 summary>"   # 无 v 前缀！
    git push origin main
-   git push origin vX.Y.Z
+   git push origin X.Y.Z
    ```
+
+8. **写 GitHub Release note**：进 https://github.com/elijahchan2019/obsidian-folio-theme/releases/new → 选刚推的 tag（`X.Y.Z`，无 v）→ 标题 `X.Y.Z`，正文按"累积改动"列（参考上次 release note 风格，把上个版本之后未发版的所有 dev commit 都包进来——这是 minor bump 的标准做法）。**发布时确认这个 release 被标为 Latest**（GitHub 按发布时间判定，乱序补发会标错，必要时 `gh release edit X.Y.Z --latest` 手动纠正）。
 
 **为什么 dev 的 name 是 "Folio-dev"**：两个主题同名会在 Obsidian 里冲突。Folio-dev 加载时会盖掉 Folio。保持 dev 叫 "Folio-dev"、main 叫 "Folio" 才能在同一 vault 同时存在并对照调试。
 
