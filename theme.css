@@ -66,13 +66,14 @@ body {
   --slate-light:  #B0AEA5;   /* Slate Light — 次要文字、图标 */
   --slate-faint:  #87867F;   /* 更淡文字 */
 
-  /* ── 表格默认间距排版 ── */
-  --table-padding-x: 10px;
-  --table-padding-y: 5px;
-  --table-header-padding-x: 10px;
-  --table-header-padding-y: 7px;
-  --table-line-height: 1.35;
-  --table-frame-color: rgba(176, 137, 104, 0.5);  /* 表格外框沙色，与 H1 呼应 */
+  /* ── 表格默认间距排版（通透卡片：更大留白）── */
+  --table-padding-x: 16px;
+  --table-padding-y: 10px;
+  --table-header-padding-x: 16px;
+  --table-header-padding-y: 13px;
+  --table-line-height: 1.45;
+  --table-frame-color: rgba(176, 137, 104, 0.5);  /* 保留（当前无框，备用） */
+  --table-border-width: 0px;   /* 关掉 Obsidian 默认单元格边框，三线由主题显式绘制 */
 
   /* ── Mermaid 图表字体 ── */
   --font-mermaid: var(--font-interface-theme);
@@ -182,7 +183,8 @@ body.theme-light {
   /* 表格（官方变量 + 强制禁用交替效果） */
   --table-column-alt-background:   transparent;
   --table-row-alt-background:      transparent;
-  --table-row-background-hover:    rgba(20, 20, 19, 0.03);  /* 极淡悬停 */
+  --table-row-background-hover:    rgba(217, 119, 87, 0.06);  /* 悬停：淡陶土色 */
+  --table-rule:    rgba(20, 20, 19, 0.68);   /* 三线颜色（比纯文字色略柔） */
   --tooltip-bg:    #141413;
   --tooltip-color: #FAF9F5;
 
@@ -298,7 +300,8 @@ body.theme-dark {
   /* 表格（官方变量 + 强制禁用交替效果） */
   --table-column-alt-background:   transparent;
   --table-row-alt-background:      transparent;
-  --table-row-background-hover:    rgba(250, 249, 245, 0.04);  /* 极淡悬停 */
+  --table-row-background-hover:    rgba(217, 119, 87, 0.10);  /* 悬停：淡陶土色 */
+  --table-rule:    rgba(250, 249, 245, 0.62);   /* 三线颜色（暗色：柔化的浅色）*/
 
   /* 阴影体系（统一为完整声明，而非单层颜色） */
   --shadow-subtle:   0 1px 3px rgba(0, 0, 0, 0.15);
@@ -1311,34 +1314,33 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   width: fit-content;
   border-collapse: collapse;
   font-family: var(--font-interface-theme);
-  margin: 16px 0 20px 0;
+  font-variant-numeric: tabular-nums;
+  margin: 18px 0 22px 0;
 
-  /* 优雅的外框：使用与 H1 呼应的沙色/陶土色，但更轻盈 (50% 透明度) */
-  border: 1px solid var(--table-frame-color);
-  border-radius: 8px;
-  overflow: hidden;
-  /* 浅浅的背景色，使表格区域从正文中脱离出来 */
-  background-color: var(--background-primary-alt);
+  /* 三线表：无卡片、无底色、无竖线、无行线；只留顶线 */
+  background: transparent;
+  border: none;
+  border-top: 1.5px solid var(--table-rule);
+  border-radius: 0;
 }
 
 .markdown-rendered th,
 .cm-embed-block th {
-  color: var(--text-normal);
-  font-weight: 700;
-  font-size: calc(var(--font-text-size) * 0.7) !important;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: calc(var(--font-text-size) * 0.82) !important;
+  letter-spacing: 0.02em;
   text-align: left;
   padding: var(--table-header-padding-y) var(--table-header-padding-x);
 
-  background: transparent !important;
-  border-bottom: 1px solid var(--background-modifier-border);
+  background: transparent !important;               /* 无色带 */
+  border-bottom: 1px solid var(--table-rule);       /* 表头下线（第二根） */
   /* 去除竖向分割线 */
   border-right: none !important;
   border-left: none !important;
 }
 
-/* 禁用表头交替背景 */
+/* 表头无底色（禁用官方交替背景） */
 .markdown-rendered thead th:nth-child(odd),
 .markdown-rendered thead th:nth-child(even),
 .cm-embed-block thead th:nth-child(odd),
@@ -1359,6 +1361,13 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   white-space: nowrap;
 }
 
+/* 首列作为行标签，稍加字重 */
+.markdown-rendered tbody td:first-child,
+.cm-embed-block tbody td:first-child {
+  font-weight: 500;
+  color: var(--text-normal);
+}
+
 .markdown-rendered td,
 .cm-embed-block td {
   padding: var(--table-padding-y) var(--table-padding-x);
@@ -1366,16 +1375,16 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   font-size: calc(var(--font-text-size) * 0.85) !important;
   line-height: var(--table-line-height);
   
-  border-bottom: 1px solid rgba(var(--background-modifier-border-rgb), 0.5);
-  /* 去除竖向分割线 */
+  /* 三线表：正文行之间不画线 */
+  border-bottom: none;
   border-right: none !important;
   border-left: none !important;
 }
 
-/* 最后一行去底边框 */
-.markdown-rendered tr:last-child td,
-.cm-embed-block tr:last-child td {
-  border-bottom: none;
+/* 末行底线（第三根） */
+.markdown-rendered tbody tr:last-child td,
+.cm-embed-block tbody tr:last-child td {
+  border-bottom: 1.5px solid var(--table-rule);
 }
 
 /* 悬停效果回归官方原生变量 */
@@ -1386,19 +1395,20 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   background-color: var(--table-row-background-hover);
 }
 
-/* 确保编辑模式 (Live Preview) 走官方架构，仅覆盖内边距和竖线 */
+/* 编辑模式 (Live Preview)：容器只管布局，不画线。
+   内层真表格 table.table-editor 已随外层 .markdown-rendered 类
+   套用阅读模式三线规则（顶线/表头下线/末行底线），容器再画顶线会重复。 */
 .markdown-source-view.mod-cm6 .cm-table-widget {
   line-height: var(--table-line-height);
   width: fit-content;
-  /* 取消官方的负边距，让外框整体右移，对齐段落文字 */
+  font-variant-numeric: tabular-nums;
+  /* 取消官方的负边距，让表格整体右移，对齐段落文字 */
   margin-inline-start: 0 !important;
   margin-left: 0 !important;
-  /* 优雅外框与圆角同步 */
-  border: 1px solid var(--table-frame-color) !important;
-  border-radius: 8px !important;
-  overflow: hidden;
-  /* 浅浅的背景色，使表格区域从正文中脱离出来 */
-  background-color: var(--background-primary-alt) !important;
+  /* 无卡片无底色无边框（线全部交给内层真表格） */
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
 }
 .markdown-source-view.mod-cm6 .cm-table-widget td .table-cell-wrapper {
   padding: var(--table-padding-y) var(--table-padding-x);
@@ -1406,19 +1416,24 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
 .markdown-source-view.mod-cm6 .cm-table-widget th .table-cell-wrapper {
   padding: var(--table-header-padding-y) var(--table-header-padding-x);
 }
-/* 编辑模式也去除竖线 */
+/* 编辑模式：去竖线 + 去行线（三线表） */
 .markdown-source-view.mod-cm6 .cm-table-widget-row .cm-table-widget-cell {
   border-right: none !important;
   border-left: none !important;
+  border-bottom: none !important;
 }
+/* 表头行：无底色 + 表头下线（第二根） */
 .markdown-source-view.mod-cm6 .cm-table-widget-row:first-child .cm-table-widget-cell {
   background: transparent !important;
-  color: var(--text-normal) !important;
-  font-weight: 700 !important;
-  font-size: calc(var(--font-text-size) * 0.7) !important;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--background-modifier-border) !important;
+  color: var(--text-muted) !important;
+  font-weight: 600 !important;
+  font-size: calc(var(--font-text-size) * 0.82) !important;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--table-rule) !important;
+}
+/* 末行底线（第三根） */
+.markdown-source-view.mod-cm6 .cm-table-widget-row:last-child .cm-table-widget-cell {
+  border-bottom: 1.5px solid var(--table-rule) !important;
 }
 
 .markdown-source-view.mod-cm6 .cm-table-widget-row .cm-table-widget-cell {
@@ -1471,6 +1486,7 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   background: transparent !important;
   border: none !important;
   border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
 /* ── 阅读模式（限宽设在 sizer 层，滚动条保持在容器右边缘） ── */
