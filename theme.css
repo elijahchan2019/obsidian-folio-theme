@@ -1126,6 +1126,14 @@ textarea:focus {
   box-shadow: var(--shadow-modal);
   border: 1px solid var(--background-modifier-border);
 }
+
+/* obsidian-git 共享 modal：容器 overflow:hidden 且输入框紧贴容器底边，
+   会把输入框底部边框/圆角/焦点环一起削平。容器内容不溢出(scrollH==clientH)，
+   overflow:hidden 无必要，放开即可，零副作用。 */
+.modal-content.sync-vault-share-container {
+  overflow: visible;
+}
+
 .modal-title {
   font-family: var(--font-interface-theme);
   font-weight: 600;
@@ -1437,6 +1445,32 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   --table-header-padding-x: 8px;
   --table-line-height: 1.3;        /* 稍微收紧行高 */
   font-size: 0.85em;               /* 适当降低字号提高信息密度 */
+}
+
+/* ── Callout 内容修正（间距 / 圆点色 / 内嵌表格）─────────────────
+   规则置于表格主规则之后，靠特异性(0,2,x)+顺序双重保证覆盖生效
+   ─────────────────────────────────────────────────────────── */
+
+/* B. 段落/列表项间距收紧（callout 内整体偏挤，去掉多余留白） */
+.callout .callout-content > * + * {
+  margin-top: 0.2em;
+}
+.callout .callout-content li {
+  margin-bottom: 0.15em;
+}
+
+/* C. 列表圆点/序号跟随 callout 底色，不再用全局陶土色 */
+.callout .callout-content ul li::marker,
+.callout .callout-content ol li::marker {
+  color: var(--callout-accent);
+}
+
+/* D. 内嵌表格融入 callout：去掉自带底色/外框/圆角，消除“盒中盒” */
+.callout .callout-content table,
+.callout .callout-content .cm-table-widget {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
 }
 
 /* ── 阅读模式（限宽设在 sizer 层，滚动条保持在容器右边缘） ── */
@@ -1841,6 +1875,19 @@ select:focus-visible,
 [tabindex]:focus-visible {
   outline: 2px solid var(--interactive-accent);
   outline-offset: 2px;
+}
+
+/* 输入框焦点环全部内置，规避插件容器 overflow:clip/hidden 裁掉底部：
+   · 官方会画一圈灰色 box-shadow(0 0 0 2px)伸到框外 → 去掉
+   · 官方 input[type=text]:focus-visible(0,2,1)把 border 压回灰色 → 用 !important 转 accent
+   · outline 内移(-1px)贴合边框，与边框连成一圈实心橙环，不外溢、不会被裁 */
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible {
+  border-color: var(--interactive-accent) !important;
+  box-shadow: none !important;
+  outline-offset: -1px;
 }
 
 /* 设置条目不需要 focus 轮廓 */
