@@ -133,7 +133,21 @@ Folio 的 `input:focus` = 0,1,1 压不过它，所以 `border-color` 改不动�
 
 > ⚠️ **别被 `versions.json` 误导。** 仓库里有个 `versions.json`，但**那是插件（plugin）概念，主题（theme）根本不读它**。它既不影响安装，也不影响市场可见性——留着无害，但**不要**把「同步 versions.json」当成发版必做项，更不要以为补它能修市场搜不到（这是上个 agent 的错误判断，已澄清见下）。
 
-> ⚠️ **市场「搜不到」≠ release / 版本问题。** 主题能否在 Obsidian 市场被搜到，只取决于它在不在官方仓库 `obsidianmd/obsidian-releases` 的 `community-css-themes.json` 清单里。改本地 tag / version / versions.json **都不可能**影响它。要上架/恢复只能向那个仓库提 PR 等官方合并。**排查市场问题前，先 grep 那个清单确认在不在，别在自己仓库里瞎改。**
+> ⚠️ **市场可见性 = 在官方索引里 + release 合规，缺一不可（且会被踢出）。**
+> 能否在 app 内市场搜到，取决于主题在不在官方 `obsidianmd/obsidian-releases` 的
+> `community-css-themes.json`（那份清单就是"索引"）。**但索引不是一劳永逸的**——
+> 推了不合规的 release 会被官方**踢出索引**。Folio 就是这么掉的：一次 gh 版本推送后
+> 被 de-index，清单里现在查无此项（Opendian 目前仍在）。所以 release 合规不是"跟市场无关"，
+> 恰恰是**保住索引的必要条件**。
+>
+> **恢复 / 重新上架流程**：
+> ① 先把仓库 + release 弄合规（tag == manifest `version` 且**无 v**、挂全资产、Latest 正确、
+>   manifest 必填字段齐、theme.css 不引外部网络资源/远程字体）→
+> ② 走 Obsidian 官方主题审核流程（在主题管理页拉取 gh 的**最新版本**提审）→
+> ③ 通过后，官方索引机器人**每 1–2 小时**扫一遍，自动重新索引 → app 内又能搜到。
+>
+> **诊断顺序**：先 `grep -i folio` 那份清单看在不在索引里；再查 latest release 的 tag
+> 是否 == manifest version（无 v）+ 资产是否齐。两头都要看，别只盯自己仓库改而不看索引状态。
 
 ## 发布前（dev → main 合并时）
 
