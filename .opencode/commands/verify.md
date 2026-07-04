@@ -14,8 +14,9 @@ description: Folio 改动的可视化验证清单（DEV_VAULT reload + 截图 + 
 
 请按顺序执行并逐项汇报：
 
-1. 在 `../DEV_VAULT/.obsidian/appearance.json` 把 `cssTheme` 切到 `Folio-dev`
-   （当前可能是别的主题），然后在 Obsidian 里 `Cmd+R` reload。symlink 已挂载。
+1. 在 `../DEV_VAULT/.obsidian/appearance.json` 把 `cssTheme` 切到 `Folio`
+   （当前可能是别的主题），然后在 Obsidian 里 `Cmd+R` reload。symlink 已挂载
+   （单分支迁移后 name 为 `Folio`，symlink 目录需对应改名为 `Folio`）。
 2. 列出本次改动**应该肉眼检查**的 DEV_VAULT 测试文档（依据改动区段，从
    `表格测试.md / 按钮体系测试.md / 可访问性测试.md / Anthropic Design Reference.md`
    中挑相关的）。`Anthropic Design Reference.md` 是本主题设计基准，颜色/排版改动必看。

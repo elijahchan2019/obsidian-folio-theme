@@ -1,0 +1,192 @@
+# Release workflow — tag-triggered, single-branch (main).
+#
+# Triggered by: pushing any tag (`git push origin main --tags`).
+# What it does:
+#   1. Validates the tag and manifest (== version, no `v` prefix, name is "Folio",
+#      theme.css is self-contained, required files present).
+#   2. Creates a GitHub Release on the tagged commit with whitelisted assets, --latest, non-draft.
+#   3. Self-checks the release (tag/version/assets/draft) and fails loud on drift.
+#
+# Single-branch architecture (since v1.4.0): development happens on main. The tag points
+# at a main commit whose manifest already has name="Folio", so there is no name-rewrite
+# or cross-branch mirroring to do. Dev-only files (AGENTS.md, .opencode/, .github/) live
+# in the repo but are excluded from release assets by the upload whitelist.
+#
+# All release-compliance rules (see AGENTS.md "红线") are enforced as explicit steps.
+# A non-compliant release would de-index the theme from the community store (Folio was
+# de-indexed in the past after a non-compliant release; the `v`-prefixed tags v1.1.13 /
+# v1.2.0 also broke Obsidian's version lookup), so this workflow is the last line of defense.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+# contents:write → create release
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # ──────────────────────────────────────────────────────────────
+      # 1. Checkout the exact commit the tag points at (on main).
+      # ──────────────────────────────────────────────────────────────
+      - name: Checkout tagged commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history to build release notes from commits since last tag
+
+      # ──────────────────────────────────────────────────────────────
+      # 2. Compliance gate — fail BEFORE creating any release.
+      #    These mirror AGENTS.md "红线" verbatim.
+      # ──────────────────────────────────────────────────────────────
+      - name: Read tag and manifest
+        id: meta
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION=$(jq -r '.version' manifest.json)
+          NAME=$(jq -r '.name' manifest.json)
+          echo "tag=$TAG"        >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "name=$NAME"      >> "$GITHUB_OUTPUT"
+          echo "Tag:        $TAG"
+          echo "Version:    $VERSION"
+          echo "Name:       $NAME"
+
+      - name: Validate tag has no `v` prefix
+        # Folio's de-index incident: a `v`-prefixed tag broke Obsidian's version lookup.
+        if: startsWith(steps.meta.outputs.tag, 'v') || startsWith(steps.meta.outputs.tag, 'V')
+        run: |
+          echo "::error::Tag '${{ steps.meta.outputs.tag }}' has a 'v' prefix. Obsidian matches the release tag to manifest.version verbatim — a 'v' prefix causes 'no GitHub release with that version'. Re-tag without the prefix."
+          exit 1
+
+      - name: Validate tag == manifest.version
+        # The single most common release failure: tag and version drift.
+        if: steps.meta.outputs.tag != steps.meta.outputs.version
+        run: |
+          echo "::error::Tag '${{ steps.meta.outputs.tag }}' != manifest.version '${{ steps.meta.outputs.version }}'. They must be identical (Obsidian looks up the release by the exact version string)."
+          exit 1
+
+      - name: Validate manifest name is "Folio"
+        # Obsidian review reads the manifest at the tagged commit. If name ≠ "Folio"
+        # (e.g. a leftover "Folio-dev" from the old dual-branch workflow), the release is
+        # rejected and the theme is pulled from the directory until fixed.
+        if: steps.meta.outputs.name != 'Folio'
+        run: |
+          echo "::error::manifest.json name is '${{ steps.meta.outputs.name }}', must be 'Folio'. Obsidian review reads the manifest at the tagged commit and rejects mismatches."
+          exit 1
+
+      - name: Validate theme.css has no external network resources
+        # Review hard-rejects remote fonts/URLs. data: URIs are fine.
+        run: |
+          if grep -nE '(url\(|@import)' theme.css \
+               | grep -v 'data:' \
+               | grep -vE '^\s*[0-9]+:\s*/\*'; then
+            echo "::error::theme.css references external network resources (lines above). Remove them — Obsidian review requires the theme to be fully self-contained."
+            exit 1
+          fi
+          echo "theme.css is self-contained ✓"
+
+      - name: Validate required release files exist
+        run: |
+          for f in theme.css manifest.json README.md screenshot.png; do
+            [ -f "$f" ] || { echo "::error::Missing required file: $f"; exit 1; }
+          done
+          echo "Required files present ✓"
+
+      # ──────────────────────────────────────────────────────────────
+      # 3. Create the release. --latest (never rely on GitHub's time-based guess),
+      #    not --draft (a draft release is invisible to the store and would de-index us).
+      #    Assets are a whitelist — dev-only files (AGENTS.md/.opencode/.github) stay
+      #    in the repo but never enter the release.
+      # ──────────────────────────────────────────────────────────────
+      - name: Build release notes (from commits since last release)
+        run: |
+          LAST_TAG=$(gh release list --repo "$GITHUB_REPOSITORY" --limit 1 --json tagName --jq '.[0].tagName' || true)
+          if [ -n "$LAST_TAG" ] && [ "$LAST_TAG" != "${{ steps.meta.outputs.tag }}" ]; then
+            NOTES=$(git log --pretty=format:'- %s' "${LAST_TAG}..HEAD" 2>/dev/null | head -50)
+          else
+            NOTES=$(git log --pretty=format:'- %s' -5)
+          fi
+          # Multiline output via $GITHUB_ENV (robust for newlines).
+          {
+            echo "RELEASE_NOTES<<EOF"
+            echo "$NOTES"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+      - name: Create GitHub Release (latest, non-draft)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Whitelist of assets to attach. Only existing files are included.
+          ASSETS=()
+          for f in theme.css manifest.json README.md README.zh-CN.md screenshot.png feature-artboard.png; do
+            [ -f "$f" ] && ASSETS+=("$f")
+          done
+
+          gh release create "${{ steps.meta.outputs.tag }}" \
+            --latest \
+            --title "${{ steps.meta.outputs.tag }}" \
+            --notes "$RELEASE_NOTES" \
+            "${ASSETS[@]}"
+
+      # ──────────────────────────────────────────────────────────────
+      # 4. Mandatory self-check. Any failure here means the release is non-compliant
+      #    and the theme may be de-indexed — fail the job loud.
+      # ──────────────────────────────────────────────────────────────
+      - name: Self-check — tag, assets, draft status (with retry for API eventual consistency)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.meta.outputs.tag }}"
+
+          # GitHub's APIs for /releases/latest, draft status, and asset indexing are
+          # eventually-consistent: a freshly-created release can read back as draft=true
+          # or as not-yet-Latest for a few seconds. Poll with backoff rather than failing
+          # on the first transient mismatch. Genuine failures persist across all attempts.
+
+          poll_until() {
+            # Args: label  expected_value  command_to_eval
+            local label="$1" expected="$2" cmd="$3"
+            for attempt in 1 2 3 4 5 6 7 8; do
+              local actual
+              actual=$(eval "$cmd" 2>/dev/null || echo "")
+              if [ "$actual" = "$expected" ]; then
+                echo "  $label: '$actual' ✓"
+                return 0
+              fi
+              echo "  $label: got '$actual', want '$expected' (attempt $attempt/8) — retrying in $((attempt * 3))s"
+              sleep $((attempt * 3))
+            done
+            echo "::error::$label did not converge to '$expected' after 8 attempts (last value: '$actual')."
+            exit 1
+          }
+
+          echo "=== Check 1: latest release tag == $TAG ==="
+          poll_until "latest-tag" "$TAG" \
+            'gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq ".tag_name"'
+
+          echo "=== Check 2: required assets present (theme.css + manifest.json) ==="
+          # Returns "ok" only when both required assets are in the release; "" otherwise.
+          assets_ok() {
+            local assets
+            assets=$(gh release view "$TAG" --json assets --jq '.assets[].name' 2>/dev/null) || return 0
+            for required in theme.css manifest.json; do
+              grep -qx "$required" <<<"$assets" || return 0
+            done
+            echo "ok"
+          }
+          poll_until "required-assets" "ok" 'assets_ok'
+
+          echo "=== Check 3: not a draft ==="
+          poll_until "draft=false" "false" \
+            'gh api "repos/$GITHUB_REPOSITORY/releases" --jq ".[]|select(.tag_name==\"$TAG\")|.draft"'
+
+          echo ""
+          echo "All release-compliance checks passed."
+          echo "Release: https://github.com/$GITHUB_REPOSITORY/releases/tag/$TAG"
