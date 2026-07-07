@@ -349,7 +349,12 @@ body.theme-dark {
   font-weight: 700;
   line-height: 1.1;   letter-spacing: -0.025em;
   color: var(--h1-color);
-  margin-top: 0;      margin-bottom: 0.6em;
+  margin-top: 2.5em;  margin-bottom: 0.6em;   /* 文中 H1 与 H2 同级留白，不再贴死上文 */
+}
+/* 文档顶部（紧随标题区/首个内容块）的 H1 不需要大间距 */
+.markdown-preview-sizer > .mod-header + div > h1,
+.markdown-preview-sizer > div:first-child > h1 {
+  margin-top: 0;
 }
 
 .inline-title {
@@ -395,7 +400,9 @@ body.theme-dark {
   margin-top: 1.5em;  margin-bottom: 0.3em;
 }
 
-/* 标题连续出现时缩小间距（div.el-h* 是兄弟，h* 在 div 内部） */
+/* 标题连续出现时缩小间距（div.el-h* 是兄弟，h* 在 div 内部）
+   :where 兜底覆盖任意级别相邻（含跳级如 h2→h4），零特异性，下面的精调规则优先 */
+.markdown-rendered :where(.el-h1, .el-h2, .el-h3, .el-h4, .el-h5, .el-h6) + :where(.el-h1, .el-h2, .el-h3, .el-h4, .el-h5, .el-h6) > :where(h1, h2, h3, h4, h5, h6) { margin-top: 0.8em; }
 .markdown-rendered div.el-h1 + div.el-h2 > h2 { margin-top: 1.0em; }
 .markdown-rendered div.el-h2 + div.el-h3 > h3 { margin-top: 0.8em; }
 .markdown-rendered div.el-h3 + div.el-h4 > h4 { margin-top: 0.5em; }
@@ -509,6 +516,15 @@ body.theme-dark {
 .markdown-source-view.mod-cm6 .cm-hmd-internal-link:hover {
   color: var(--text-accent) !important;
   text-decoration-color: var(--text-accent) !important;
+}
+
+/* 标签胶囊与脚注序号不是"链接"视觉语言，豁免上面的鬼影下划线 */
+a.tag,
+.markdown-rendered a.tag,
+.footnote-ref a,
+.footnote-link,
+.footnote-backref {
+  text-decoration: none !important;
 }
 
 /* ── 引用块 ── */
@@ -763,6 +779,15 @@ a.tag {
   color: var(--tag-color-hover) !important; /* 悬停时文字对比更强一点 */
 }
 
+/* Live Preview 标签同样有 hover 反馈（与阅读模式一致）。
+   胶囊拆成 begin/end 两半，悬停任一半时用兄弟选择器点亮另一半 */
+.cm-hashtag:hover,
+.cm-hashtag-begin:hover + .cm-hashtag-end,
+.cm-hashtag-begin:has(+ .cm-hashtag-end:hover) {
+  background: var(--tag-background-hover);
+  color: var(--tag-color-hover);
+}
+
 /* Live Preview：完美的胶囊拼接（因为没有边框，所以拼接毫无破绽） */
 .cm-hashtag.cm-hashtag-begin {
   border-radius: var(--radius-pill) 0 0 var(--radius-pill);
@@ -804,6 +829,8 @@ a.tag {
    原生对勾以 ::after 蒙版绘制在最上层，input 的 background-image
    会被它整个盖住（此前改勾"不生效"的根因），故在同一通道替换造型 */
 .task-list-item-checkbox:checked::after {
+  content: '';
+  position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
@@ -818,8 +845,9 @@ a.tag {
   mask-repeat: no-repeat;
 }
 
-/* 伪元素扩大点击范围（不影响布局） */
-.task-list-item-checkbox::after {
+/* 伪元素扩大点击范围（不影响布局）——挂在 ::before，
+   避免 ::after 被勾选态征用为对勾后热区缩水（取消勾选变难点） */
+.task-list-item-checkbox::before {
   content: '';
   position: absolute;
   inset: -6px;
@@ -1043,8 +1071,12 @@ a.tag {
 /* 滑槽透明：隐藏凹槽，只保留滑块（仿浏览器悬浮滚动条观感） */
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-corner { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb-bg); border-radius: var(--radius-s); }
-::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-active-thumb-bg); }
+/* 自定义滚动条会失去 macOS 原生的自动隐藏，用 CSS 近似还原：
+   滑块默认透明，仅当光标悬停在该滚动容器上时显现
+   （滚动条伪元素不支持 transition，显隐为瞬时切换） */
+::-webkit-scrollbar-thumb { background: transparent; border-radius: var(--radius-s); }
+:hover::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb-bg); }
+:hover::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-active-thumb-bg); }
 
 /* ── 按钮（4种核心按钮类型） ── */
 
@@ -1237,7 +1269,8 @@ input[type='range']::-webkit-slider-thumb:hover {
 
 /* ── 嵌入/卡片 ── */
 
-.internal-embed,
+/* 笔记嵌入用卡片观感；图片/音视频嵌入排除（否则透明图衬出白底+边框） */
+.internal-embed:not(.image-embed):not(.media-embed),
 .markdown-embed {
   border: 1px solid var(--background-modifier-border);
   border-radius: var(--radius-l);
@@ -1564,6 +1597,10 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
 
 ::selection {
   background: rgba(var(--interactive-accent-rgb), 0.15);
+}
+/* 暗色下 15% 太淡，与高亮色一致提到 25% */
+body.theme-dark ::selection {
+  background: rgba(var(--interactive-accent-rgb), 0.25);
 }
 
 /* ── Frontmatter / 属性 ──────────────────────────────────────
@@ -2014,7 +2051,10 @@ textarea:focus-visible {
   .nav-file-title, .nav-folder-title, .workspace-tab-header, .menu-item,
   button, input, textarea, select, a,
   .task-list-item-checkbox, .titlebar-button-container,
-  .metadata-add-button, .view-header-nav-buttons .clickable-icon {
+  .metadata-add-button, .view-header-nav-buttons .clickable-icon,
+  .tree-item-self, .outline-item-self,
+  .tree-item-self::before, .outline-item-self::before,
+  .nav-file-title::before, .nav-folder-title::before {
     transition-duration: 0.01ms !important;
     transition-delay: 0.01ms !important;
     animation-duration: 0.01ms !important;
@@ -2039,12 +2079,6 @@ button:focus-visible .clickable-icon,
 }
 
 /* ── 键盘导航增强 ─────────────────────────────────────────── */
-
-/* Tab 健全顺序优化 */
-.markdown-source-view.is-focused {
-  /* 确保源码模式下的模块获得焦点时有清晰指示 */
-  box-shadow: 0 0 0 2px var(--interactive-accent);
-}
 
 /* 搜索结果焦点状态 */
 .search-result-file-title:focus,
@@ -2099,10 +2133,7 @@ select {
 
 /* ── 模态框与对话框可访问性 ──────────────────────────────────── */
 
-/* 模态框焦点陷阱（通过 JS 实现，CSS 仅做视觉支持） */
-.modal.is-active {
-  z-index: 1000;  /* 确保在最上层 */
-}
+/* 模态框层级交给 Obsidian 自身的 --layer-* 体系，不再硬写 z-index */
 
 .modal:focus-within {
   /* 当模态框内有焦点时，轻微加强阴影提示（半透明细环，压低存在感） */
@@ -2151,7 +2182,9 @@ select {
 }
 
 .workspace-split.mod-left-split .nav-header:hover::before,
-.workspace-split.mod-right-split .nav-header:hover::before {
+.workspace-split.mod-right-split .nav-header:hover::before,
+.workspace-split.mod-left-split .nav-header:focus-within::before,
+.workspace-split.mod-right-split .nav-header:focus-within::before {
   opacity: 0;
 }
 
@@ -2165,6 +2198,9 @@ select {
 .workspace-split.mod-right-split .nav-buttons-container {
   display: flex !important;
   justify-content: center;
+  /* 允许换行：插件注入大量按钮时（如 git 的 8 图标 + 提交输入框）不被裁掉；
+     单行视图（文件树/大纲）flex-wrap 是 no-op，观感不变 */
+  flex-wrap: wrap;
   gap: 8px;
   overflow: hidden;
   max-height: 0;
@@ -2178,8 +2214,11 @@ select {
 }
 
 .workspace-split.mod-left-split .nav-header:hover .nav-buttons-container,
-.workspace-split.mod-right-split .nav-header:hover .nav-buttons-container {
-  max-height: 40px; 
+.workspace-split.mod-right-split .nav-header:hover .nav-buttons-container,
+.workspace-split.mod-left-split .nav-header:focus-within .nav-buttons-container,
+.workspace-split.mod-right-split .nav-header:focus-within .nav-buttons-container {
+  /* 天花板而非定高：单行工具条仍 ~32px 展开，只有换行的多按钮面板用到余量 */
+  max-height: 88px;
   opacity: 1;
   margin-top: 6px !important;
   margin-bottom: 6px !important;
@@ -2220,7 +2259,9 @@ select {
 }
 
 .workspace-split.mod-left-split .workspace-leaf-content:hover .view-actions,
-.workspace-split.mod-right-split .workspace-leaf-content:hover .view-actions {
+.workspace-split.mod-right-split .workspace-leaf-content:hover .view-actions,
+.workspace-split.mod-left-split .view-actions:focus-within,
+.workspace-split.mod-right-split .view-actions:focus-within {
   opacity: 1;
   pointer-events: auto;
 }
@@ -2268,12 +2309,23 @@ select {
   margin-top: 0 !important;
 }
 
+/* 小横条对齐：核心视图的 .nav-header 在 .view-content 之外，10px 内边距只垫内容；
+   但部分插件（如 obsidian-git）把 .nav-header 嵌进 .view-content 里，
+   会连横条一起被垫低 10px。结构性豁免：凡内嵌 nav-header 的视图去掉顶部内边距，
+   让横条回到面板顶端自身的 6px margin 上，与文件树/大纲的横条同一水平线 */
+.workspace-split.mod-left-split .view-content:has(.nav-header),
+.workspace-split.mod-right-split .view-content:has(.nav-header) {
+  padding-top: 0 !important;
+}
+
 /* ==========================================================
    2. 彻底移除问号帮助图标 (Nuclear Hide Help Icon)
    ========================================================== */
-/* svg[class*="help"] 已涵盖 lucide-help-circle，无需单列；display:none 已移出布局，
-   width/height/visibility 等冗余属性一并去掉 */
-svg[class*="help" i] { display: none !important; }
+/* 收窄到帮助图标实际出没的区域（ribbon/底栏/抽屉），
+   不再全局 svg[class*="help"]——那会误杀插件里 class 含 "help(er)" 的图标 */
+.workspace-ribbon svg[class*="help" i],
+.workspace-sidedock-vault-profile svg[class*="help" i],
+.workspace-drawer-settings svg[class*="help" i] { display: none !important; }
 
 .workspace [aria-label*="Help" i],
 .workspace [aria-label*="帮助" i],
@@ -2284,9 +2336,19 @@ svg[class*="help" i] { display: none !important; }
 .workspace-drawer-settings > *:nth-last-child(2) { display: none !important; }
 
 /* 仅隐藏帮助按钮容器。切勿把选择器写成整个工作区级的 has 匹配——
-   help 图标一出现就会让主内容区 display none 全白屏(canvas 等视图会触发) */
-.workspace-split.mod-left-split .clickable-icon:has(svg.lucide-help-circle),
-.workspace-split.mod-left-split .side-dock-ribbon-action:has(svg.lucide-help-circle) { display: none !important; }
+   help 图标一出现就会让主内容区 display none 全白屏(canvas 等视图会触发)。
+   用 [class*="help"] 子串匹配：lucide 已把 help-circle 改名 circle-help，
+   写死旧类名会漏掉容器，留下"图标隐形但按钮可点"的幽灵热区 */
+.workspace-split.mod-left-split .clickable-icon:has(svg[class*="help" i]),
+.workspace-split.mod-left-split .side-dock-ribbon-action:has(svg[class*="help" i]) { display: none !important; }
+
+/* 例外：底栏 vault profile 里的帮助按钮改为占位隐藏——
+   不可见也不可点，但保留原有宽度，设置图标不会因补位而贴到窗口边缘 */
+.workspace-split.mod-left-split .workspace-sidedock-vault-profile .clickable-icon:has(svg[class*="help" i]) {
+  display: flex !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
 
 /* ==========================================================
    3. 替换设置齿轮为 Obsidian 官方 logo 几何线稿
@@ -2410,6 +2472,12 @@ svg[class*="help" i] { display: none !important; }
 
 @media print {
   body { background: white; color: #141413; }
+
+  /* 纸张噪点纹理不进 PDF（否则底子发灰且增大文件体积） */
+  .markdown-preview-view,
+  .markdown-source-view {
+    background-image: none !important;
+  }
 
   /* 暗色主题下导出：内容元素引用的变量仍是暗色值（浅字），会印成白纸浅字。
      强制回退亮色 token（值与 body.theme-light 保持一致） */
