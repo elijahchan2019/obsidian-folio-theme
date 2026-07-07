@@ -1312,6 +1312,7 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
 .markdown-rendered table,
 .cm-embed-block table {
   width: fit-content;
+  max-width: 100%;
   border-collapse: collapse;
   font-family: var(--font-interface-theme);
   font-variant-numeric: tabular-nums;
@@ -1353,12 +1354,12 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   background: transparent !important;
 }
 
-/* 第一列不换行 */
+/* 第一列允许换行（长内容按词断行，短内容自然不换行） */
 .markdown-rendered td:first-child,
 .markdown-rendered th:first-child,
 .cm-embed-block td:first-child,
 .cm-embed-block th:first-child {
-  white-space: nowrap;
+  white-space: normal;
 }
 
 /* 首列作为行标签，稍加字重 */
@@ -1374,11 +1375,18 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   color: var(--text-normal);
   font-size: calc(var(--font-text-size) * 0.85) !important;
   line-height: var(--table-line-height);
+  word-break: break-word;
   
   /* 三线表：正文行之间不画线 */
   border-bottom: none;
   border-right: none !important;
   border-left: none !important;
+}
+
+/* 表格内链接允许在分隔符处断行 */
+.markdown-rendered td a,
+.cm-embed-block td a {
+  overflow-wrap: anywhere;
 }
 
 /* 末行底线（第三根） */
@@ -1401,6 +1409,7 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
 .markdown-source-view.mod-cm6 .cm-table-widget {
   line-height: var(--table-line-height);
   width: fit-content;
+  max-width: 100%;
   font-variant-numeric: tabular-nums;
   /* 取消官方的负边距，让表格整体右移，对齐段落文字 */
   margin-inline-start: 0 !important;
@@ -1438,6 +1447,10 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
 
 .markdown-source-view.mod-cm6 .cm-table-widget-row .cm-table-widget-cell {
   font-size: calc(var(--font-text-size) * 0.85) !important;
+  word-break: break-word;
+}
+.markdown-source-view.mod-cm6 .cm-table-widget-cell a {
+  overflow-wrap: anywhere;
 }
 
 /* 表格内 code：去掉背景/边框 */
