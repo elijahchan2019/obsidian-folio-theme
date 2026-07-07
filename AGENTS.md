@@ -1,8 +1,11 @@
 # AGENTS.md — Folio
 
-Obsidian theme. Single-file CSS, no build step. Aesthetic: **Anthropic 社论衬线风**
-— 衬线标题、典雅陶土/书卷色板（Clay `#D97757`、Ivory、Olive、Fig、Sky、Heather）、
-克制的链接与交互、纸张微质感。基调是"安静、文气、可长时间阅读"，不是科技感。
+Obsidian theme. Single-file CSS, no build step. Aesthetic: **Anthropic 社论风（无衬线标题）**
+— 标题自 v1.1.9 起默认与正文同为无衬线（中英混排下衬线视觉跳动，刻意取舍；
+原衬线社论标题保留为 opt-in snippet `folio-heading-font-serif`，衬线栈 token
+`--font-heading-theme` 仅由该 snippet 消费）、典雅陶土/书卷色板（Clay `#D97757`、
+Ivory、Olive、Fig、Sky、Heather）、克制的链接与交互、纸张微质感。
+基调是"安静、文气、可长时间阅读"，不是科技感。
 
 ## 纪律（必须遵守）
 

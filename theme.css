@@ -1,6 +1,8 @@
 /* ============================================================
-   Folio — Obsidian Theme  v1.0.9-dev (Folio-dev 验收版)
-   字体: Inter · Lora · Instrument Sans · JetBrains Mono
+   Folio — Obsidian Theme
+   字体: Anthropic Sans / Inter (正文·标题·UI) · JetBrains Mono (代码)
+         标题自 v1.1.9 起默认无衬线（中英混排更稳）；
+         原衬线社论标题保留为 opt-in: snippets/folio-heading-font-serif.css
    色彩: Ivory #FAF9F5 · Slate #141413 · Clay #D97757
    ============================================================*/
 
@@ -8,6 +10,7 @@
 
 body {
   --font-text-theme:       'Anthropic Sans', 'Inter', 'Instrument Sans', system-ui, "Segoe UI", Roboto, Helvetica, Arial, "Source Han Sans SC", "Source Han Sans CN", "Noto Sans CJK SC", "思源黑体", "PingFang SC", "Microsoft YaHei", sans-serif;
+  /* 衬线栈：主题默认不消费（标题走 --font-text-theme），由 snippets/folio-heading-font-serif.css 按需启用 */
   --font-heading-theme:    'Anthropic Serif', 'Source Serif 4', 'Source Serif Pro', 'Source Serif', Georgia, "GenRyuMin2 TW", "源流明體月", "GenRyuMin2 TC", "源流明體丹", "GenRyuMin2 JP", "源流明朝", "GenRyuMin", "源流明體", "Source Han Serif SC", "Source Han Serif CN", "Noto Serif CJK SC", "思源宋体", "Songti SC", "STSong", serif;
   --font-monospace-theme:  'Anthropic Mono', 'JetBrains Mono', ui-monospace, monospace;
   --font-interface-theme:  'Anthropic Sans', 'Instrument Sans', 'Inter', system-ui, "Segoe UI", Roboto, Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -64,7 +67,6 @@ body {
 
   /* ── 辅助文字层级（页岩灰色系） ── */
   --slate-light:  #B0AEA5;   /* Slate Light — 次要文字、图标 */
-  --slate-faint:  #87867F;   /* 更淡文字 */
 
   /* ── 表格默认间距排版（通透卡片：更大留白）── */
   --table-padding-x: 16px;
@@ -165,10 +167,11 @@ body.theme-light {
   --slider-thumb-width:       16px;
   --slider-thumb-radius:      50%;
 
-  /* 标签 */
-  --tag-background:       #D97757;
-  --tag-background-hover: #C6613F;
-  --tag-color:            #FAF9F5;
+  /* 标签（.tag 规则实际消费的 token） */
+  --tag-background:       rgba(217, 119, 87, 0.10);
+  --tag-background-hover: rgba(217, 119, 87, 0.18);
+  --tag-color:            #A47665;   /* 较深陶土文字 */
+  --tag-color-hover:      #8C6051;
 
   /* 滚动条 */
   --scrollbar-bg:              #EBE9E0;
@@ -280,9 +283,13 @@ body.theme-dark {
   --slider-thumb-width:       16px;
   --slider-thumb-radius:      50%;
 
-  --tag-background:       #D97757;
-  --tag-background-hover: #E8916A;
-  --tag-color:            #FAF9F5;
+  --tag-background:       rgba(217, 119, 87, 0.12);
+  --tag-background-hover: rgba(217, 119, 87, 0.20);
+  --tag-color:            #D9A08C;   /* 浅陶土文字，暗底可读（≈7.7:1） */
+  --tag-color-hover:      #E9B7A4;
+
+  /* 复选框边框：body 里的深色描边在暗底上不可见，换象牙描边 */
+  --checkbox-border-color: rgba(250, 249, 245, 0.25);
 
   --scrollbar-bg:              #1A1A18;
   --scrollbar-thumb-bg:        #333331;
@@ -439,12 +446,24 @@ body.theme-dark {
   margin-bottom: var(--p-spacing, 1.2em);
 }
 
-/* 区分不同列表项之间的间距 (大于行高的 1.65)，避免长列表项混在一起 */
+/* 区分不同列表项之间的间距 (收紧，与段落间距拉开差距) */
 .markdown-rendered li {
-  margin-bottom: var(--list-spacing, 0.6em);
+  margin-bottom: var(--list-spacing, 0.25em);
+}
+/* 嵌套/松散列表：上面的 1.0625em 会随层级复利放大（li li、li>p 逐层相乘），重置回父级字号 */
+.markdown-rendered li li,
+.markdown-rendered li p {
+  font-size: 1em;
+}
+.markdown-rendered ul,
+.markdown-rendered ol {
+  margin-block: 0.4em;
+}
+.markdown-rendered li > p {
+  margin-bottom: 0.15em;
 }
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-list-line {
-  padding-bottom: var(--list-spacing, 0.6em);
+  padding-bottom: var(--list-spacing, 0.25em) !important;
 }
 
 /* 内容区粗体/斜体 — 用 .markdown-rendered 约束，不影响 UI */
@@ -479,7 +498,7 @@ body.theme-dark {
   background-image: none !important;
   padding: 0 !important;
   margin: 0 !important;
-  transition: all 0.2s ease;
+  transition: color var(--anim-medium), text-decoration-color var(--anim-medium);
 }
 
 .markdown-rendered a:hover,
@@ -519,9 +538,8 @@ body.theme-dark {
   pointer-events: none;
 }
 
+/* 字号/行高不再缩小，与编辑模式（正文 17px）观感对齐 */
 .markdown-rendered blockquote p {
-  font-size: 0.95em;
-  line-height: 1.6;
   margin-bottom: 0;
 }
 
@@ -717,8 +735,8 @@ hr,
 
 .tag,
 .cm-hashtag {
-  background: rgba(217, 119, 87, 0.1); /* 10% 透明度的陶土色，极轻微的底色 */
-  color: #a47665; /* 较深的陶土文字色，保证可读性 */
+  background: var(--tag-background); /* 极轻微的陶土底色 */
+  color: var(--tag-color); /* 陶土文字色，token 分模式取值保证可读性 */
   border: none; /* 彻底去除边框 */
   border-radius: var(--radius-pill); /* 恢复标准的胶囊圆角 */
   padding: 3px 10px;
@@ -737,12 +755,12 @@ hr,
 .markdown-rendered li a.tag,
 .markdown-rendered blockquote a.tag,
 a.tag {
-  color: #a47665 !important;
+  color: var(--tag-color) !important;
 }
 
-.tag:hover { 
-  background: rgba(217, 119, 87, 0.18); /* 悬停时底色稍微加深一点点 */
-  color: #8c6051 !important; /* 悬停时文字更深一点 */
+.tag:hover {
+  background: var(--tag-background-hover); /* 悬停时底色稍微加深一点点 */
+  color: var(--tag-color-hover) !important; /* 悬停时文字对比更强一点 */
 }
 
 /* Live Preview：完美的胶囊拼接（因为没有边框，所以拼接毫无破绽） */
@@ -860,11 +878,15 @@ a.tag {
   font-family: var(--font-interface-theme);
   font-size: 0.85em;
 }
+/* 页签标题：随父级界面字体（不再 monospace 大写，科技感过强），
+   但字号压小以容纳更长的文档名，一眼可辨 */
 .workspace-tab-header-inner-title {
-  font-family: var(--font-monospace-theme) !important;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.76em;
+  font-size: 0.78em;
+}
+
+/* 当前活跃页签：加重字重，与颜色（Clay）双通道区分 */
+.workspace-tab-header.is-active .workspace-tab-header-inner-title {
+  font-weight: 600;
 }
 
 /* 锁定页签图标 — 简约竖线圆钉（修正选择器：.mod-pinned 在 close-button 上） */
@@ -1249,12 +1271,16 @@ input[type='range']::-webkit-slider-thumb:hover {
   font-size: 0.9em;
   line-height: 1.55;
   color: var(--text-normal);
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   gap: 8px;
   margin: 0;
   padding: 0;
+}
+.callout-title-inner {
+  max-width: 65%;
 }
 .callout-content {
   font-size: 0.875em;
@@ -1425,11 +1451,13 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
 .markdown-source-view.mod-cm6 .cm-table-widget th .table-cell-wrapper {
   padding: var(--table-header-padding-y) var(--table-header-padding-x);
 }
-/* 编辑模式：去竖线 + 去行线（三线表） */
+/* 编辑模式：去竖线 + 去行线（三线表）+ 字号/断行与阅读模式统一 */
 .markdown-source-view.mod-cm6 .cm-table-widget-row .cm-table-widget-cell {
   border-right: none !important;
   border-left: none !important;
   border-bottom: none !important;
+  font-size: calc(var(--font-text-size) * 0.85) !important;
+  word-break: break-word;
 }
 /* 表头行：无底色 + 表头下线（第二根） */
 .markdown-source-view.mod-cm6 .cm-table-widget-row:first-child .cm-table-widget-cell {
@@ -1445,10 +1473,6 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   border-bottom: 1.5px solid var(--table-rule) !important;
 }
 
-.markdown-source-view.mod-cm6 .cm-table-widget-row .cm-table-widget-cell {
-  font-size: calc(var(--font-text-size) * 0.85) !important;
-  word-break: break-word;
-}
 .markdown-source-view.mod-cm6 .cm-table-widget-cell a {
   overflow-wrap: anywhere;
 }
@@ -1491,6 +1515,16 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
 .callout .callout-content ul li::marker,
 .callout .callout-content ol li::marker {
   color: var(--callout-accent);
+}
+
+/* D. Callout 内 blockquote 允许换行（防止长文本撑爆 flex 容器） */
+.callout .callout-content blockquote {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+.callout .callout-content blockquote p {
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* D. 内嵌表格融入 callout：去掉自带底色/外框/圆角，消除“盒中盒” */
@@ -1923,11 +1957,8 @@ textarea:focus-visible {
 .setting-item:focus,
 .setting-item:focus-visible { outline: none; }
 
-/* 统一过渡（仅限高频交互元素） */
-.nav-file-title,
-.nav-folder-title,
-.workspace-tab-header,
-.menu-item {
+/* 统一过渡（nav-title / menu-item 已在各自区段声明同值，此处只补页签） */
+.workspace-tab-header {
   transition: background var(--anim-fast), color var(--anim-fast);
 }
 
@@ -2032,11 +2063,12 @@ button:focus-visible .clickable-icon,
 
 /* ── 链接与交互元素可访问性 ──────────────────────────────── */
 
-/* 链接触摸区域：保持 inline 布局（resize 时无 reflow 开销），用 padding 扩大可点击区域 */
+/* 链接触摸区域：保持 inline 布局（resize 时无 reflow 开销），用 padding 扩大可点击区域。
+   !important 是必须的——链接主规则的 padding: 0 !important 否则会把这条压死 */
 .markdown-rendered a,
 .internal-link,
 .external-link {
-  padding: 2px 0;
+  padding: 2px 0 !important;
 }
 
 /* 按钮、输入框统一比例：水平 padding 大于垂直，避免方形 */
@@ -2073,8 +2105,8 @@ select {
 }
 
 .modal:focus-within {
-  /* 当模态框内有焦点时，增加阴影提示 */
-  box-shadow: var(--shadow-modal), 0 0 0 4px var(--interactive-accent);
+  /* 当模态框内有焦点时，轻微加强阴影提示（半透明细环，压低存在感） */
+  box-shadow: var(--shadow-modal), 0 0 0 2px rgba(var(--interactive-accent-rgb), 0.4);
 }
 
 
@@ -2114,7 +2146,7 @@ select {
   border-radius: 2px;
   background-color: var(--background-modifier-border);
   margin: 6px auto 0 auto;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--anim-medium);
   flex-shrink: 0;
 }
 
@@ -2201,7 +2233,8 @@ select {
   padding: 6px !important;
   opacity: 0.6;
   color: var(--text-muted);
-  transition: all 0.2s ease;
+  transition: opacity var(--anim-medium), color var(--anim-medium),
+              background-color var(--anim-medium), border-radius var(--anim-medium);
 }
 
 .workspace-split.mod-left-split .nav-buttons-container .clickable-icon:hover,
@@ -2278,7 +2311,7 @@ svg[class*="help" i] { display: none !important; }
   min-width: 26px !important; min-height: 26px !important;
   padding: 0 !important;
   display: flex !important; align-items: center; justify-content: center;
-  transition: background-color 0.2s ease !important;
+  transition: background-color var(--anim-medium) !important;
 }
 
 /* 注入官方几何线稿（mask 造型统一走 --obsidian-gem-icon 变量），象牙白嵌在陶土方块内 */
@@ -2377,6 +2410,38 @@ svg[class*="help" i] { display: none !important; }
 
 @media print {
   body { background: white; color: #141413; }
+
+  /* 暗色主题下导出：内容元素引用的变量仍是暗色值（浅字），会印成白纸浅字。
+     强制回退亮色 token（值与 body.theme-light 保持一致） */
+  body.theme-dark {
+    --background-primary:         #FFFFFF;
+    --background-primary-alt:     #F0EEE6;
+    --background-secondary-alt:   #E8E6DC;
+    --background-modifier-border: rgba(20, 20, 19, 0.08);
+    --text-normal:  #3D3D3A;
+    --text-muted:   #5E5D59;
+    --text-faint:   var(--slate-light);
+    --text-accent:  #D97757;
+    --interactive-accent: #D97757;
+    --h1-color: #141413;
+    --h2-color: #141413;
+    --h3-color: #141413;
+    --h4-color: #1A1A18;
+    --h5-color: #3D3D3A;
+    --h6-color: #5E5D59;
+    --table-rule: rgba(20, 20, 19, 0.68);
+    --tag-background: rgba(217, 119, 87, 0.10);
+    --tag-color:      #A47665;
+    --code-keyword:   #C6613F;
+    --code-string:    #5A7A3A;
+    --code-number:    #A63D2F;
+    --code-comment:   #8A8985;
+    --code-function:  #4A7AA8;
+    --code-type:      #6E6AA8;
+    --code-variable:  #141413;
+    --code-property:  #3D3D3A;
+    --code-operator:  #5E5D59;
+  }
 
   .markdown-rendered {
     max-width: none;

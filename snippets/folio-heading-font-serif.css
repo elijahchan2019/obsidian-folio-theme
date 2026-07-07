@@ -1,0 +1,18 @@
+/* Folio snippet: 恢复原始社论衬线标题（opt-in）
+   主题自 v1.1.9 起标题默认无衬线（中英混排更稳）；
+   启用本 snippet 可让 H1–H5 与文档标题回到衬线栈 --font-heading-theme。
+   H6 保持无衬线大写小标签风格，不受影响。 */
+
+.markdown-rendered h1,
+.markdown-rendered h2,
+.markdown-rendered h3,
+.markdown-rendered h4,
+.markdown-rendered h5,
+.inline-title,
+.HyperMD-header-1, .cm-header-1,
+.HyperMD-header-2, .cm-header-2,
+.HyperMD-header-3, .cm-header-3,
+.HyperMD-header-4, .cm-header-4,
+.HyperMD-header-5, .cm-header-5 {
+  font-family: var(--font-heading-theme) !important;
+}
