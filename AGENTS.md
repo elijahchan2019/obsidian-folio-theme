@@ -66,6 +66,25 @@ DEV_VAULT 通过 symlink 把本主题挂进 `../DEV_VAULT/.obsidian/themes/Folio
 在那条线上把输入框连边框带圆角带焦点环一起裁掉。**在元素本身上怎么改都没用，
 因为裁剪发生在外层。**
 
+### 2.5 「症状在 X 元素上」的姊妹篇：病根可能来自**共享底层语法的兄弟规则**
+
+第 2 节讲的是「查祖先容器」（溢出 / 裁剪漏过来）。这是它的另一个维度：
+**A 元素表现异常，先查是不是 B 元素的规则通过共享语法 / 共享 class 漏过来的。**
+
+Obsidian 里这三对「共享底层语法」是这类误伤的高发区，改其中之一时务必想另一只会不会被波及：
+
+| 共享语法 | 外观层 | 编辑态底层 | 误伤场景 |
+|----------|--------|-----------|---------|
+| **callout ↔ blockquote** | callout 是独立块 | callout 底层就是 `>`（`HyperMD-quote`） | 给 blockquote 写的引号伪装（`::before` SVG + 隐藏 `>`）会命中 callout 展开后的源码行 |
+| **embed ↔ image** | `![[x]]` 嵌入 | 同图片语法 | 图片相关规则可能波及嵌入 |
+| **tag ↔ link** | `#tag` 胶囊 | 同链接底层 | 链接规则可能波及 tag |
+
+真实例子（v1.4.4 callout 编辑态空白，五轮误诊）：callout 在 Live Preview 下点击进入编辑态后，引号标题下方冒出大空白 + 引号图标。五轮全在 callout 自己的 CSS（flex / 宽度 / 间距 / widget 映射）里找 → 全无效。真凶是 **blockquote 的引号伪装规则**：callout 展开成源码时，每个 `>` 行带 `HyperMD-quote`，被 blockquote 的 `cm-formatting-quote::before`（伪装引号图标）+ `color: transparent`（隐藏 `>` 占位块）误伤——引号图标冒出来、`>` 被透明化但仍占宽、隐藏的 `[!note]` 标记堆出空白。**callout 的 CSS 一行都没错，是引用块规则越界了。**
+
+破局点：callout 的源码行有独有 class `HyperMD-callout`，用它做**反向豁免**（`:not` 思路），把引号图标去掉、`>` 恢复可见，编辑态一目了然。相关豁免见 theme.css 中 `HyperMD-callout .cm-formatting-quote` 规则。
+
+**判据**：当 A 的症状无法用 A 自己的任何 CSS 解释、且 A 在底层和 B 共享语法时——先怀疑 B 的规则漏过来了，别在 A 上反复试。
+
 ### 3. 裁剪 / 遮挡类 bug 的标准第一步：devtools 量祖先链
 
 `Cmd+Opt+I` → Console，从目标元素往上逐层打印每个祖先的

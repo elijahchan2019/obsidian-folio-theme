@@ -1,0 +1,38 @@
+/* ============================================================
+   Folio — 阅读型衬线字体（opt-in snippet）
+   ============================================================
+   作用：正文 + 标题切到衬线字体，复刻长文阅读的社论感。
+         UI chrome（按钮/菜单/状态栏）保持无衬线。
+
+   为什么这样选字体（解决"数字与中文违和"的结构性问题）：
+   早期版本尝试 Anthropic Serif（Light 300 的拉丁品牌字体），但在中英混排下
+   数字显得"飘、小、没站住"。字体内部数据显示根因是设计层面的三重落差——
+   Light 字重（中文是 Regular）、拉丁数字高度仅占 em 的 70%（中文方块 ~90%）、
+   以及它本就是为纯英文界面设计。这是 CSS 无法修正的字体设计问题。
+
+   最终选型（数据驱动）：
+   - 西文：Charter（macOS 内置）。Regular 字重，与中文同字重；
+     数字为 lining（齐线），天生与中文方块字顶底对齐；阅读型衬线，
+     字形温润。无 lnum/onum feature 切换，数字字形固定，行为可预测。
+   - 中文：思源宋体 SC（Source Han Serif）。开源 OFL，与 Source Serif
+     同家族设计语言；作为无 Charter 时的 CJK 回退。
+   - 备选西文降级：Iowan Old Style、Georgia（系统自带）。
+
+   关于 old-style figures 的教训：不要在中文混排启用 onum。
+   中文是方块字（顶天立地无下沉），old-style 数字（3/5/7/9 下沉）放在
+   中文旁边，数字的"尾巴"会戳到中文底线外，视觉上像数字漏下去。
+   Claude 官方界面是纯英文，oldstyle 才成立；中文混排必须用 lining。
+   ============================================================ */
+
+body {
+  /* 正文 + 标题：Charter（西文）+ 思源宋体 SC（中文） */
+  --font-text-theme:    'Charter', 'Iowan Old Style', Georgia, "Source Han Serif SC", "Source Han Serif CN", "Noto Serif CJK SC", "思源宋体", "Songti SC", "STSong", serif;
+  --font-heading-theme: 'Charter', 'Iowan Old Style', Georgia, "Source Han Serif SC", "Source Han Serif CN", "Noto Serif CJK SC", "思源宋体", "Songti SC", "STSong", serif;
+  /* --font-interface-theme 不动：UI chrome 保持无衬线 */
+  /* --font-monospace-theme 不动：代码保持等宽 */
+}
+
+/* ── 数字：沿用 theme.css 默认 lining-nums（齐线） ── */
+/* Charter 数字天生 lining，theme.css 的 font-variant-numeric: lining-nums
+   与之天然兼容。中文混排下数字顶底与中文方块对齐。不覆盖，不画蛇添足。
+   表格 tabular-nums 由组件级规则保护，自动对齐。 */

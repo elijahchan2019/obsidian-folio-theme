@@ -600,6 +600,26 @@ a.tag,
   display: none !important;
 }
 
+/* Callout 豁免：callout 底层语法也是 blockquote，点击展开源码时其 `>` 行
+   同样带 HyperMD-quote，会被上面的引号伪装误伤（冒出引号图标 + 透明占位块）。
+   标题行特有 HyperMD-callout class——去掉图标、恢复 `>` 可见，编辑时一目了然 */
+.markdown-source-view.mod-cm6 .HyperMD-callout .cm-formatting-quote::before {
+  display: none !important;
+}
+.markdown-source-view.mod-cm6 .HyperMD-callout .cm-formatting-quote {
+  color: var(--text-faint) !important;
+  width: auto;
+}
+/* 紧随标题行的内容行同样恢复 `>`（内容行没有专属 class，用相邻链覆盖常见深度） */
+.markdown-source-view.mod-cm6 .HyperMD-callout + .HyperMD-quote .cm-formatting-quote,
+.markdown-source-view.mod-cm6 .HyperMD-callout + .HyperMD-quote + .HyperMD-quote .cm-formatting-quote,
+.markdown-source-view.mod-cm6 .HyperMD-callout + .HyperMD-quote + .HyperMD-quote + .HyperMD-quote .cm-formatting-quote,
+.markdown-source-view.mod-cm6 .HyperMD-callout + .HyperMD-quote + .HyperMD-quote + .HyperMD-quote + .HyperMD-quote .cm-formatting-quote,
+.markdown-source-view.mod-cm6 .HyperMD-callout + .HyperMD-quote + .HyperMD-quote + .HyperMD-quote + .HyperMD-quote + .HyperMD-quote .cm-formatting-quote {
+  color: var(--text-faint) !important;
+  width: auto;
+}
+
 /* ── 代码 ── */
 
 /* 行内代码（编辑器 + 阅读模式统一） */
@@ -1293,10 +1313,9 @@ input[type='range']::-webkit-slider-thumb:hover {
   border-radius: var(--radius-l);
   background: var(--background-primary-alt);
   padding: 10px 16px 12px 20px;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 14px;
+  /* 不用 display:flex —— flex 容器会破坏 Live Preview 下 CodeMirror 的 widget
+     高度映射，导致 callout 内代码块/表格/段落被撑出数倍空白（实测 <p> 122px、
+     <pre> 488px）。回归原生 block，title/content 靠文档流纵向堆叠。 */
 }
 .callout-title {
   font-family: var(--font-interface-theme);
@@ -1304,22 +1323,18 @@ input[type='range']::-webkit-slider-thumb:hover {
   font-size: 0.9em;
   line-height: 1.55;
   color: var(--text-normal);
-  flex: 0 1 auto;
-  flex-wrap: wrap;
   display: flex;
-  align-items: center;
+  align-items: center;   /* 图标与标题文字垂直居中，单行不换行 → 图标不下沉 */
   gap: 8px;
-  margin: 0;
+  margin: 0 0 0.3em 0;   /* title→content 间距用 margin 实现，不依赖容器 gap */
   padding: 0;
 }
 .callout-title-inner {
-  max-width: 65%;
+  min-width: 0;   /* 允许收缩让出折叠箭头空间；不再 max-width 限宽 → 标题有整行空间，不换行 */
 }
 .callout-content {
   font-size: 0.875em;
   line-height: 1.55;
-  flex: 1 1 auto;
-  min-width: 0;
   margin: 0;
 }
 .callout-content p {
