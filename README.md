@@ -2,84 +2,63 @@
 
 ![Folio preview](screenshot.png)
 
-> **A warm editorial theme for Obsidian.** Ivory surfaces, clay accents, and spacious typography that turn long notes into a manuscript-like reading surface — for writing, research, and daily knowledge work.
+**An editorial theme for Obsidian.**<br>
+Read quietly. Think clearly.
 
-[中文介绍](https://github.com/elijahchan2019/obsidian-folio-theme/blob/main/README.zh-CN.md) · Light &amp; Dark · Desktop &amp; Mobile · No plugin required
+[中文介绍](README.zh-CN.md) · Light and dark · Desktop and mobile · No plugin required
 
-Folio is built for one thing: making Obsidian feel less like a generic app screen and more like a calm writing desk. Every surface, accent, and line of spacing is tuned for reading and thinking — not for chrome.
+Folio gives long notes the pace of a manuscript. Warm paper tones soften the screen. Spacious type, restrained color, and quiet controls keep attention on the page.
 
-## Why Folio
+It suits writing, research, and knowledge work that asks you to stay with a document for a while.
 
-- **Editorial by default** — a Lora-based serif type scale tuned for reading, writing, research notes, and long-form thinking.
-- **One palette, two moods** — warm light and quiet dark modes built from the same ivory, slate, charcoal, and clay system.
-- **A restrained, intentional accent** — clay carries links, selection, focus, active states, and task checks, so the page stays calm but never flat.
-- **Multi-color callouts** — distinct accents for `info`, `warning`, `error`, `danger`, `success`, `tip`, `question`, `quote`, `abstract`, `summary`, and `example`.
-- **Considered details everywhere** — headings, tables, blockquotes, links, tags, checkboxes, embeds, code blocks, properties, Canvas nodes, and file navigation are all styled to match.
-- **CJK-aware typography** — font stacks mapped for seamless mixed English and Chinese rendering across platforms.
-- **Quiet, distraction-free motion** — smooth sidebar hover expansion and optimized layout transitions.
-- **Accessible and print-ready** — visible focus states, reduced-motion handling, high-contrast support, and clean PDF output.
+## Design language
 
-## Feature Showcase
+Folio uses a compact palette with clear roles:
 
-A single glance at what Folio styles — editorial typography, multi-color callouts, spring-loaded task checks, warm code syntax, editorial tables and blockquotes, light &amp; dark, and quiet metadata.
-
-![Folio feature overview](feature-artboard.png)
-
-## Design
-
-Folio is designed around a restrained editorial palette:
-
-| Token | Use |
+| Color | Role |
 | --- | --- |
-| Ivory | Main writing surface |
-| Slate | Primary text and headings |
-| Clay | Links, buttons, selection, focus, and active states |
-| Charcoal | Dark mode background |
+| Ivory | Reading and writing surface |
+| Slate | Text and headings |
+| Clay | Links, focus, selection, and active states |
+| Charcoal | Dark mode surface |
 
-Typography is tuned for mixed English and Chinese notes. The public theme uses open and system font stacks, so it works without bundling private font files:
+The light theme uses several warm ivory values to separate the editor, sidebars, tabs, and floating surfaces. The dark theme follows the same hierarchy in charcoal rather than reversing the light palette.
 
-- **Reading and headings:** Lora, Georgia, and CJK serif fallbacks
-- **Interface:** Instrument Sans, Inter, and system UI fallbacks
-- **Code:** JetBrains Mono and system monospace fallbacks
+Headings and body text share a sans-serif family by default. This keeps mixed Latin and CJK text steady across sizes and platforms. Interface text remains subdued, while code uses a dedicated monospace stack.
 
-## What Folio Styles
+## Details that shape the page
 
-Folio focuses on the parts of Obsidian that shape the writing day:
+- **Typography:** a 17px reading size, relaxed line height, compact heading scale, and deliberate spacing between sections
+- **Blockquotes:** a small quotation mark and indentation replace the usual vertical border
+- **Tables:** three editorial rules define the table without vertical lines, zebra stripes, or a card frame
+- **Links and tags:** links inherit the text color until hover; tags use a pale clay tint
+- **Tasks:** circular checkboxes fill with Clay, while completed items fade without a strikethrough
+- **Navigation:** slim Clay indicators mark the current file and outline position
+- **Callouts:** eleven semantic colors use light tints and a narrow accent edge
+- **Code:** warm syntax colors distinguish keywords, strings, numbers, comments, and symbols
+- **Paper texture:** a fine grain sits inside the reading surface and stays out of print and PDF output
 
-- **Callouts:** distinct accent palettes for common note states without making the page feel noisy
-- **Tables:** completely borderless-grid editorial tables with a subtle clay-colored outer border, 8px rounded corners, bold contrast headers, and a faint background elevation.
-- **Blockquotes:** magazine-inspired editorial quotes with an invisible border, a delicate serif quotation mark, and elegant text indentation.
-- **Code:** warm syntax colors for keywords, strings, numbers, comments, functions, types, properties, operators, and variables
-- **Navigation:** active file and outline indicators with clay accent strips for stronger orientation
-- **Metadata:** transparent property fields with subtle hover and focus states
-- **Canvas and embeds:** rounded nodes, quiet borders, and soft elevation
-- **Tags and checkboxes:** clay pill tags and filled task checkboxes
-- **Accessibility:** visible keyboard focus, high-contrast mode support, reduced-motion support, and print/PDF-friendly styling
+Folio also covers properties, embeds, Canvas, menus, modals, inputs, settings, keyboard focus, high-contrast mode, and reduced-motion preferences.
 
-## Recommended Usage & Snippets
+## Optional snippets
 
-In the latest Folio design, heading hierarchy has been optimized:
+Folio keeps one default appearance. The bundled snippets offer a few deliberate variations:
 
-- **H1**: Recommended for the **main document title**. Its font size has been significantly increased to match the visual weight of the Inline Title.
-- **H2**: Recommended for **section headings**. To make H2 more prominent in long-form writing, we provide a dedicated CSS snippet that applies the theme's signature clay accent color to H2s.
+- [`folio-heading-font-serif.css`](snippets/folio-heading-font-serif.css) restores serif headings while leaving body text and interface chrome sans-serif.
+- [`folio-font-serif-anthropic.css`](snippets/folio-font-serif-anthropic.css) switches document text and headings to a reading serif stack led by Charter and CJK serif fallbacks.
+- [`folio-h2-color.css`](snippets/folio-h2-color.css) gives H2 headings a warm clay tone.
 
-**How to use the H2 color snippet (Optional):**
-1. Download [`folio-h2-color.css`](snippets/folio-h2-color.css) from the `snippets/` directory of this repository.
-2. Place it in your `<vault>/.obsidian/snippets/` directory.
-3. Enable `folio-h2-color` in Obsidian's **Settings -> Appearance -> CSS Snippets**.
-
-This is completely optional and recommended only if you want stronger section breaks in your notes.
+Copy a snippet into `<vault>/.obsidian/snippets/`, then enable it under **Settings → Appearance → CSS snippets**.
 
 ## Installation
 
+Install Folio from the Obsidian community theme browser:
 
-Install from the Obsidian community theme browser:
+1. Open **Settings → Appearance → Themes → Manage**.
+2. Search for **Folio**.
+3. Install and enable the theme.
 
-1. Open **Settings -> Appearance -> Themes -> Manage**
-2. Search for **Folio**
-3. Install and enable the theme
-
-Manual installation is also possible by downloading the latest release and placing `theme.css` and `manifest.json` in:
+For manual installation, download `theme.css` and `manifest.json` from the [latest release](https://github.com/elijahchan2019/obsidian-folio-theme/releases/latest) and place them in:
 
 ```text
 <vault>/.obsidian/themes/Folio/
@@ -90,7 +69,7 @@ Manual installation is also possible by downloading the latest release and placi
 - Obsidian 1.5.0+
 - Light and dark modes
 - Desktop and mobile
-- No plugin required
+- No plugin dependency
 
 ## License
 
