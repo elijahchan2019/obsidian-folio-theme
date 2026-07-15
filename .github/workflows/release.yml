@@ -3,7 +3,7 @@
 # Triggered by: pushing any tag (`git push origin main --tags`).
 # What it does:
 #   1. Validates the tag and manifest (== version, no `v` prefix, name is "Folio",
-#      theme.css is self-contained, required files present).
+#      tagged commit is on main, theme.css is self-contained, required files present).
 #   2. Creates a GitHub Release on the tagged commit with whitelisted assets, --latest, non-draft.
 #   3. Self-checks the release (tag/version/assets/draft) and fails loud on drift.
 #
@@ -79,6 +79,20 @@ jobs:
         run: |
           echo "::error::manifest.json name is '${{ steps.meta.outputs.name }}', must be 'Folio'. Obsidian review reads the manifest at the tagged commit and rejects mismatches."
           exit 1
+
+      - name: Validate tagged commit is on main
+        # Incident (1.4.6): `git push origin main --tags` — the main push was rejected
+        # (non-fast-forward, local was behind) but the TAG still went through, because
+        # tag pushes bypass fast-forward protection. The workflow then released a
+        # dangling commit that was never on main. Enforce the single-branch invariant:
+        # the tagged commit must be an ancestor of origin/main.
+        run: |
+          git fetch origin main --quiet
+          if ! git merge-base --is-ancestor HEAD origin/main; then
+            echo "::error::Tagged commit $(git rev-parse --short HEAD) is NOT on main. Likely cause: 'git push origin main --tags' where the main push was rejected but the tag went through. Fix: git pull --rebase origin main && git push origin main, then git tag -f '${{ steps.meta.outputs.tag }}' && git push -f origin '${{ steps.meta.outputs.tag }}'."
+            exit 1
+          fi
+          echo "Tagged commit is on main ✓"
 
       - name: Validate theme.css has no external network resources
         # Review hard-rejects remote fonts/URLs. data: URIs are fine.

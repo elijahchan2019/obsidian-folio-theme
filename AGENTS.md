@@ -223,6 +223,9 @@ gh api repos/elijahchan2019/obsidian-folio-theme/releases --jq '.[]|select(.tag_
 
 ```bash
 # 在 main 上：
+# 0. 先同步远端 + 读 manifest 确认当前版本号（多会话/多机器下本地常落后；
+#    ⚠️ push 里 main 被拒时 tag 仍会推成功 → 悬空 tag 触发错误 release，1.4.6 踩过）：
+git pull --rebase origin main && jq -r .version manifest.json
 # 1. 改 theme.css（或其他发布产物）
 # 2. bump manifest.json 的 version，例如 1.4.1
 # 3. commit + 打 tag（tag 必须无 v 前缀，必须 == version）+ 一条命令推送：
@@ -231,6 +234,7 @@ git commit -m "v1.4.1: <改动摘要>"
 git tag 1.4.1
 git push origin main --tags
 # 完成。workflow 接管，约 1 分钟后 release 上线。
+# （workflow 有"tag 必须在 main 上"校验闸，悬空 tag 会被直接 fail 掉）
 ```
 
 **就这些。** 因为 tag 打在 main commit 上，而 main 的 manifest name 永远是 `Folio`，
