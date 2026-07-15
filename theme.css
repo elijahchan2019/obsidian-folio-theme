@@ -1449,7 +1449,9 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   color: var(--text-normal);
   font-size: calc(var(--font-text-size) * 0.85) !important;
   line-height: var(--table-line-height);
-  word-break: break-word;
+  /* 不用 word-break: break-word（≈ anywhere）：它会把列的 min-content 压到单字符，
+     短列（版本号/日期）会被长列挤成竖排。break-word 长词照断，但保住 min-content */
+  overflow-wrap: break-word;
   
   /* 三线表：正文行之间不画线 */
   border-bottom: none;
@@ -1505,7 +1507,7 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   border-left: none !important;
   border-bottom: none !important;
   font-size: calc(var(--font-text-size) * 0.85) !important;
-  word-break: break-word;
+  overflow-wrap: break-word;  /* 同阅读模式：保住短列 min-content，见 td 注释 */
 }
 /* 表头行：无底色 + 表头下线（第二根） */
 .markdown-source-view.mod-cm6 .cm-table-widget-row:first-child .cm-table-widget-cell {
@@ -1525,7 +1527,8 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   overflow-wrap: anywhere;
 }
 
-/* 表格内 code：去掉背景/边框 */
+/* 表格内 code：去掉背景/边框；长 token（路径/命令）允许任意断行，
+   与 td a 同理——防止不可断长词把列 min-content 撑爆、挤压其他列 */
 .markdown-rendered td code,
 .markdown-rendered th code,
 .cm-embed-block td code,
@@ -1534,6 +1537,7 @@ body.theme-light .callout[data-callout='tip']     { color: #3d5a1a; }
   border: none;
   padding: 0 2px;
   font-size: 0.9em;
+  overflow-wrap: anywhere;
 }
 
 /* Dataview 专属紧凑化配置 */
