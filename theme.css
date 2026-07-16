@@ -2009,6 +2009,18 @@ textarea:focus-visible {
   outline-offset: -1px;
 }
 
+/* Prompt 弹窗（快速切换/命令面板/移动文件等）输入框：回归原生无边框极简样式。
+   全局 input 盒式样式 + 双层橙色焦点环在这里会与 prompt 自带的容器边框/分隔线
+   叠成脏边框（同类坑：全局规则漏进特殊容器，参考 callout 豁免） */
+input.prompt-input,
+input.prompt-input:focus,
+input.prompt-input:focus-visible {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+}
+
 /* 设置条目不需要 focus 轮廓 */
 .setting-item:focus,
 .setting-item:focus-visible { outline: none; }
@@ -2539,9 +2551,36 @@ select {
     line-height: 1.65;
   }
 
-  /* 表格防跨页截断 */
-  table { break-inside: avoid; }
+  /* 表格分页策略：整表 avoid 会把接近整页高的大表推到下一页、
+     留下半页空白，故允许表格跨页——但行内不拆、表头在每页自动重复 */
+  table { break-inside: auto; }
+  thead { display: table-header-group; }
   tr    { break-inside: avoid; }
+
+  /* 块级元素防跨页劈裂（callout 断裂 = 左边框/底色悬空，最难看） */
+  .callout,
+  blockquote,
+  pre,
+  img,
+  .internal-embed,
+  .markdown-embed {
+    break-inside: avoid;
+  }
+
+  /* 标题不与后续内容分离（防止标题孤悬页底） */
+  h1, h2, h3, h4, h5, h6 {
+    break-after: avoid;
+    break-inside: avoid;
+  }
+
+  /* 图片说明跟住图片 */
+  .markdown-rendered img + em,
+  .markdown-rendered .image-caption {
+    break-before: avoid;
+  }
+
+  /* 段落孤行/寡行控制 */
+  p { orphans: 2; widows: 2; }
 
   /* 隐藏不需要打印的 UI */
   .metadata-container,
