@@ -88,6 +88,141 @@ body {
   font-feature-settings: "lnum";
 }
 
+/* ============================================================
+   @settings — Folio 可视化配置（Style Settings 插件）
+   ────────────────────────────────────────────────────
+   设计原则：
+   1. 主题 token 定义一字不改。Style Settings 通过
+      body.theme-*.css-settings-manager 注入覆盖，特异性 (0,2,1)
+      天然压过主题的 body.theme-* (0,1,1)，无需自引用 var() hack。
+   2. 零运行时开销：不引入 color-mix、不加变量层级。
+   3. 只暴露纯视觉、低耦合项。accent 派生态（hover/selected 等）
+      不联动 —— 见 STYLE_SETTINGS_TEST.md「已知非联动项」。
+   ============================================================ */
+
+/* @settings
+
+name: Folio
+id: folio-theme
+settings:
+
+  # ─── 强调色 ───
+  -
+    id: interactive-accent
+    title: 强调色（Accent / Clay）
+    description: 主强调色。改动会联动 checkbox、滑块、active 图标、链接高亮等所有引用 --interactive-accent 的组件。hover 态等派生色不联动。
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#D97757'
+    default-dark: '#D97757'
+
+  # ─── 标题字号 ───
+  -
+    id: inline-title-size
+    title: Inline Title 字号
+    type: variable-text
+    default: '1.75em'
+  -
+    id: h1-size
+    title: H1 字号
+    type: variable-text
+    default: '1.75em'
+  -
+    id: h2-size
+    title: H2 字号
+    type: variable-text
+    default: '1.3em'
+  -
+    id: h3-size
+    title: H3 字号
+    type: variable-text
+    default: '1.15em'
+
+  # ─── 圆角 ───
+  -
+    id: radius-s
+    title: 小圆角（inline code / 小元素）
+    type: variable-text
+    default: '4px'
+  -
+    id: radius-m
+    title: 中圆角（按钮 / 输入框 / 代码块）
+    type: variable-text
+    default: '8px'
+  -
+    id: radius-l
+    title: 大圆角（卡片 / 模态框 / 嵌入）
+    type: variable-text
+    default: '16px'
+
+  # ─── Callout 色板（典雅书卷色，模式无关） ───
+  -
+    id: callout-color-info
+    title: Callout Info（Sky）
+    type: variable-color
+    format: hex
+    default: '#6A9BCC'
+  -
+    id: callout-color-warning
+    title: Callout Warning（Kraft）
+    type: variable-color
+    format: hex
+    default: '#D4A27F'
+  -
+    id: callout-color-error
+    title: Callout Error（Fig）
+    type: variable-color
+    format: hex
+    default: '#C46686'
+  -
+    id: callout-color-success
+    title: Callout Success（Olive）
+    type: variable-color
+    format: hex
+    default: '#788C5D'
+  -
+    id: callout-color-clay
+    title: Callout Clay
+    type: variable-color
+    format: hex
+    default: '#D97757'
+  -
+    id: callout-color-slate
+    title: Callout Slate
+    type: variable-color
+    format: hex
+    default: '#5E5D59'
+  -
+    id: callout-color-heather
+    title: Callout Heather
+    type: variable-color
+    format: hex
+    default: '#827DBD'
+
+  # ─── 间距排版 ───
+  -
+    id: p-spacing
+    title: 段落间距
+    type: variable-text
+    default: '1.2rem'
+  -
+    id: list-spacing
+    title: 列表项间距
+    type: variable-text
+    default: '0.25em'
+  -
+    id: table-padding-x
+    title: 表格水平内边距
+    type: variable-text
+    default: '16px'
+  -
+    id: table-padding-y
+    title: 表格垂直内边距
+    type: variable-text
+    default: '10px'
+*/
+
 /* ── 亮色模式 ──────────────────────────────────────────────── */
 
 body.theme-light {
