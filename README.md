@@ -58,7 +58,7 @@ Install Folio from the Obsidian community theme browser:
 2. Search for **Folio**.
 3. Install and enable the theme.
 
-For manual installation, download `theme.css` and `manifest.json` from the [latest release](https://github.com/elijahchan2019/obsidian-folio-theme/releases/latest) and place them in:
+For manual installation, download `theme.css` and `manifest.json` from the [latest release](https://github.com/elijahchan2019/theme-folio/releases/latest) and place them in:
 
 ```text
 <vault>/.obsidian/themes/Folio/
