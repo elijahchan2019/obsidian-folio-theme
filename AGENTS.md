@@ -204,9 +204,9 @@ Folio 的 `input:focus` = 0,1,1 压不过它，所以 `border-color` 改不动�
 
 **发完 30 秒强制自检（缺一不可）：**
 ```bash
-gh api repos/elijahchan2019/theme-folio/releases/latest --jq '.tag_name'  # == manifest version，无 v
+gh api repos/elijah7x/theme-folio/releases/latest --jq '.tag_name'  # == manifest version，无 v
 gh release view <版本> --json assets --jq '.assets[].name'                          # theme.css / manifest.json 在
-gh api repos/elijahchan2019/theme-folio/releases --jq '.[]|select(.tag_name=="<版本>")|.draft'  # 必须 false
+gh api repos/elijah7x/theme-folio/releases --jq '.[]|select(.tag_name=="<版本>")|.draft'  # 必须 false
 ```
 > ⚠️ 坑：`gh release create` 传大图（如 feature-artboard.png）可能**客户端超时**，
 > 把 release 卡在 **draft** 态——draft 不建 tag、不算 Latest、市场也看不到。

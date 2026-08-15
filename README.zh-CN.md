@@ -58,7 +58,7 @@ Folio 保留一个明确的默认外观。仓库附带几种有边界的变化�
 2. 搜索 **Folio**。
 3. 安装并启用主题。
 
-手动安装时，从[最新版本](https://github.com/elijahchan2019/theme-folio/releases/latest)下载 `theme.css` 和 `manifest.json`，放入：
+手动安装时，从[最新版本](https://github.com/elijah7x/theme-folio/releases/latest)下载 `theme.css` 和 `manifest.json`，放入：
 
 ```text
 <vault>/.obsidian/themes/Folio/
